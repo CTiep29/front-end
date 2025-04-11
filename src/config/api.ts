@@ -8,6 +8,10 @@ Module Auth
 export const callRegister = (name: string, email: string, password: string, age: number, gender: string, address: string) => {
     return axios.post<IBackendRes<IUser>>('/api/v1/auth/register', { name, email, password, age, gender, address })
 }
+export const callRegisterRecruiter = (name: string, email: string, password: string, companyName: string, companyAddress: string) => {
+    return axios.post<IBackendRes<IUser>>('/api/v1/auth/register-recruiter', { name, email, password, companyName, companyAddress });
+};
+
 
 export const callLogin = (username: string, password: string) => {
     return axios.post<IBackendRes<IAccount>>('/api/v1/auth/login', { username, password })
@@ -111,7 +115,13 @@ export const callDeleteUser = (id: string) => {
 export const callFetchUser = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IUser>>>(`/api/v1/users?${query}`);
 }
-
+export const callChangePassword = (userId: string, oldPassword: string, newPassword: string) => {
+    return axios.post<IBackendRes<any>>('/api/v1/users/change-password', {
+        userId,
+        oldPassword,
+        newPassword
+    });
+}
 /**
  * 
 Module Job

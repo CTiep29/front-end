@@ -1,16 +1,16 @@
 import { useState, useEffect } from 'react';
-import { CodeOutlined, ContactsOutlined, FireOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, TwitterOutlined } from '@ant-design/icons';
+import { CodeOutlined, ContactsOutlined, FireOutlined, HomeOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined } from '@ant-design/icons';
 import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
 import { Menu, ConfigProvider } from 'antd';
 import styles from '@/styles/client.module.scss';
 import { isMobile } from 'react-device-detect';
-import { FaReact } from 'react-icons/fa';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { callLogout } from '@/config/api';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import ManageAccount from './modal/manage.account';
+import logo from '../../assets/logo.png'
 
 const Header = (props: any) => {
     const navigate = useNavigate();
@@ -33,7 +33,7 @@ const Header = (props: any) => {
         {
             label: <Link to={'/'}>Trang Chủ</Link>,
             key: '/',
-            icon: <TwitterOutlined />,
+            icon: <HomeOutlined />,
         },
         {
             label: <Link to={'/job'}>Việc Làm IT</Link>,
@@ -98,15 +98,21 @@ const Header = (props: any) => {
                     {!isMobile ?
                         <div style={{ display: "flex", gap: 30 }}>
                             <div className={styles['brand']} >
-                                <FaReact onClick={() => navigate('/')} title='Hỏi Dân IT' />
+                                <img
+                                    src={logo}
+                                    alt="Logo"
+                                    onClick={() => navigate('/')}
+                                    style={{ cursor: 'pointer', height: 40, paddingTop: 7 }}
+                                />
+
                             </div>
                             <div className={styles['top-menu']}>
                                 <ConfigProvider
                                     theme={{
                                         token: {
                                             colorPrimary: '#fff',
-                                            colorBgContainer: '#222831',
-                                            colorText: '#a7a7a7',
+                                            colorBgContainer: '##3399FF',
+                                            colorText: '#fff',
                                         },
                                     }}
                                 >
@@ -116,11 +122,17 @@ const Header = (props: any) => {
                                         selectedKeys={[current]}
                                         mode="horizontal"
                                         items={items}
+                                        style={{ minWidth: '500px' }}
+
                                     />
                                 </ConfigProvider>
                                 <div className={styles['extra']}>
-                                    {isAuthenticated === false ?
-                                        <Link to={'/login'}>Đăng Nhập</Link>
+                                    {isAuthenticated === false ? (
+                                        <div style={{ display: 'flex', gap: 20 }}>
+                                            <Link to="/register-recruiter" className={styles["btn-register-hr"]}>Nhà Tuyển Dụng</Link>
+                                            <Link to="/login">Đăng Nhập</Link>
+                                        </div>
+                                    )
                                         :
                                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                             <Space style={{ cursor: "pointer" }}>
