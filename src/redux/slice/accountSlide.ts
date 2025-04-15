@@ -19,6 +19,7 @@ interface IState {
         id: string;
         email: string;
         name: string;
+        company_id?: string;
         role: {
             id?: string;
             name?: string;
@@ -104,13 +105,14 @@ export const accountSlide = createSlice({
         })
 
         builder.addCase(fetchAccount.fulfilled, (state, action) => {
-            if (action.payload) {
+            if (action.payload?.user) {
                 state.isAuthenticated = true;
                 state.isLoading = false;
                 state.user.id = action?.payload?.user?.id;
                 state.user.email = action.payload.user?.email;
                 state.user.name = action.payload.user?.name;
                 state.user.role = action?.payload?.user?.role;
+                state.user.company_id = action.payload.user.company_id ?? "";
                 if (!action?.payload?.user?.role) state.user.role = {};
                 state.user.role.permissions = action?.payload?.user?.role?.permissions ?? [];
             }

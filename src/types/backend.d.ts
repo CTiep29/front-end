@@ -21,6 +21,7 @@ export interface IAccount {
         id: string;
         email: string;
         name: string;
+        company_id?: string;
         role: {
             id: string;
             name: string;
@@ -44,6 +45,7 @@ export interface ICompany {
     logo: string;
     description?: string;
     createdBy?: string;
+    location?: string;
     isDeleted?: boolean;
     deletedAt?: boolean | null;
     createdAt?: string;
