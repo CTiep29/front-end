@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { callFetchJob } from '@/config/api';
+import { callFetchJob, callFetchJobByCompanyId } from '@/config/api';
 import { IJob } from '@/types/backend';
 
 interface IState {
@@ -13,13 +13,29 @@ interface IState {
     result: IJob[]
 }
 // First, create the thunk
+// export const fetchJob = createAsyncThunk(
+//     'job/fetchJob',
+//     async ({ query }: { query: string }) => {
+//         const response = await callFetchJob(query);
+//         return response;
+//     }
+// )
 export const fetchJob = createAsyncThunk(
     'job/fetchJob',
-    async ({ query }: { query: string }) => {
-        const response = await callFetchJob(query);
-        return response;
+    async (
+        { query, companyId }: { query: string; companyId?: string },
+        thunkAPI
+    ) => {
+        try {
+            const response = companyId
+                ? await callFetchJobByCompanyId(companyId, query)
+                : await callFetchJob(query);
+            return response;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
     }
-)
+);
 
 
 const initialState: IState = {

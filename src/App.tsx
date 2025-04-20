@@ -17,7 +17,7 @@ import Footer from 'components/client/footer.client';
 import HomePage from 'pages/home';
 import styles from 'styles/app.module.scss';
 import DashboardPage from './pages/admin/dashboard';
-import CompanyPage from './pages/admin/company';
+import CompanyPage from './pages/admin/company/company.admin';
 import PermissionPage from './pages/admin/permission';
 import ResumePage from './pages/admin/resume';
 import RolePage from './pages/admin/role';
@@ -31,6 +31,7 @@ import ClientCompanyPage from './pages/company';
 import ClientCompanyDetailPage from './pages/company/detail';
 import JobTabs from './pages/admin/job/job.tabs';
 import RecruiterRegisterPage from './pages/auth/register.recruiter';
+import CompanyRouterPage from './pages/admin/company/company.router';
 
 const LayoutClient = () => {
   const [searchTerm, setSearchTerm] = useState("");
@@ -99,7 +100,7 @@ export default function App() {
           path: "company",
           element:
             <ProtectedRoute>
-              <CompanyPage />
+              <CompanyRouterPage />
             </ProtectedRoute>
         },
         {

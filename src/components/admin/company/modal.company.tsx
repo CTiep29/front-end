@@ -113,17 +113,9 @@ const ModalCompany = (props: IProps) => {
     }
 
     const handlePreview = async (file: any) => {
-        if (!file.originFileObj) {
-            setPreviewImage(file.url);
-            setPreviewOpen(true);
-            setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-            return;
-        }
-        getBase64(file.originFileObj, (url: string) => {
-            setPreviewImage(url);
-            setPreviewOpen(true);
-            setPreviewTitle(file.name || file.url.substring(file.url.lastIndexOf('/') + 1));
-        });
+        setPreviewImage(file.url || file.thumbUrl);
+        setPreviewOpen(true);
+        setPreviewTitle(file.name || file.url?.substring(file.url.lastIndexOf('/') + 1));
     };
 
     const getBase64 = (img: any, callback: any) => {
@@ -251,7 +243,7 @@ const ModalCompany = (props: IProps) => {
                                                             uid: uuidv4(),
                                                             name: dataInit?.logo ?? "",
                                                             status: 'done',
-                                                            url: `${import.meta.env.VITE_BACKEND_URL}/storage/company/${dataInit?.logo}`,
+                                                            url: dataInit.logo,
                                                         }
                                                     ] : []
                                             }

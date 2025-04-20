@@ -4,25 +4,42 @@ import JobPage from './job';
 import SkillPage from './skill';
 import Access from '@/components/share/access';
 import { ALL_PERMISSIONS } from '@/config/permissions';
+import { useAppSelector } from '@/redux/hooks';
+import JobRecruiterPage from './job.recruiter';
 
 const JobTabs = () => {
+    const { role } = useAppSelector(state => state.account.user);
     const onChange = (key: string) => {
         // console.log(key);
     };
 
-    const items: TabsProps['items'] = [
-        {
-            key: '1',
-            label: 'Manage Jobs',
-            children: <JobPage />,
-        },
-        {
-            key: '2',
-            label: 'Manage Skills',
-            children: <SkillPage />,
-        },
+    let items: TabsProps['items'] = [];
 
-    ];
+    if (Number(role?.id) === 2) {
+        // Nếu là nhà tuyển dụng
+        items = [
+            {
+                key: '1',
+                label: 'Manage Jobs In Company',
+                children: <JobRecruiterPage />,
+            }
+        ];
+    } else {
+        console.log("ROLE ID:", role?.id, "TYPE:", typeof role?.id);
+        // Nếu là admin
+        items = [
+            {
+                key: '1',
+                label: 'Manage Jobs',
+                children: <JobPage />,
+            },
+            {
+                key: '2',
+                label: 'Manage Skills',
+                children: <SkillPage />,
+            },
+        ];
+    }
     return (
         <div>
             <Access

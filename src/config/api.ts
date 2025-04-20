@@ -142,6 +142,10 @@ export const callFetchJob = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/jobs?${query}`);
 }
 
+export const callFetchJobByCompanyId = (companyId: string, query: string) => {
+    return axios.get<IBackendRes<IModelPaginate<IJob>>>(`/api/v1/companies/${companyId}/jobs?${query}`);
+};
+
 export const callFetchJobById = (id: string) => {
     return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
 }
