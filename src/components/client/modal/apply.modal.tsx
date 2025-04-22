@@ -138,7 +138,7 @@ const ApplyModal = (props: IProps) => {
                     </div>
                     :
                     <div>
-                        Bạn chưa đăng nhập hệ thống. Vui lòng đăng nhập để có thể "Rải CV" bạn nhé -.-
+                        Bạn chưa đăng nhập hệ thống. Vui lòng đăng nhập để có thể "ứng tuyển" bạn nhé -.-
                     </div>
                 }
                 <Divider />

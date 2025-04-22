@@ -9,6 +9,7 @@ import dayjs from 'dayjs';
 import { MonitorOutlined } from "@ant-design/icons";
 import { SKILLS_LIST } from "@/config/utils";
 import { useAppSelector } from "@/redux/hooks";
+import UserUpdateInfo from "./update.info";
 
 interface IProps {
     open: boolean;
@@ -93,13 +94,13 @@ const UserResume = (props: any) => {
     )
 }
 
-const UserUpdateInfo = (props: any) => {
-    return (
-        <div>
-            //todo
-        </div>
-    )
-}
+// const UserUpdateInfo = (props: any) => {
+//     return (
+//         <div>
+//             //todo
+//         </div>
+//     )
+// }
 
 const JobByEmail = (props: any) => {
     const [form] = Form.useForm();

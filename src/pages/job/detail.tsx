@@ -53,7 +53,7 @@ const ClientJobDetailPage = (props: any) => {
                                     <button
                                         onClick={() => setIsModalOpen(true)}
                                         className={styles["btn-apply"]}
-                                    >Apply Now</button>
+                                    >Ứng tuyển ngay</button>
                                 </div>
                                 <Divider />
                                 <div className={styles["skills"]}>

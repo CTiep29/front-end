@@ -22,6 +22,11 @@ export interface IAccount {
         email: string;
         name: string;
         company_id?: string;
+        age?: string;
+        gender?: string;
+        address?: string;
+        avatar?: string;
+        cv?: string;
         role: {
             id: string;
             name: string;
@@ -72,6 +77,8 @@ export interface IUser {
     age: number;
     gender: string;
     address: string;
+    avatar?: string;
+    cv?: string;
     role?: {
         id: string;
         name: string;

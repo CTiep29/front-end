@@ -20,6 +20,11 @@ interface IState {
         email: string;
         name: string;
         company_id?: string;
+        age?: string;
+        gender?: string;
+        address?: string;
+        avatar?: string;
+        cv?: string;
         role: {
             id?: string;
             name?: string;
@@ -115,6 +120,12 @@ export const accountSlide = createSlice({
                 state.user.company_id = action.payload.user.company_id ?? "";
                 if (!action?.payload?.user?.role) state.user.role = {};
                 state.user.role.permissions = action?.payload?.user?.role?.permissions ?? [];
+
+                state.user.age = action?.payload?.user?.age ?? "";
+                state.user.gender = action?.payload?.user?.gender ?? "";
+                state.user.address = action?.payload?.user?.address ?? "";
+                state.user.avatar = action?.payload?.user?.avatar ?? "";
+                state.user.cv = action?.payload?.user?.cv ?? "";
             }
         })
 
