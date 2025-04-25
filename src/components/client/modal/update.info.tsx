@@ -21,7 +21,7 @@ const UserUpdateInfo = () => {
     });
 
     const [avatarUrl, setAvatarUrl] = useState<string>(userFromStore.avatar || '');
-    const [cvFileName, setCvFileName] = useState<string>(userFromStore.cv || '');
+    const [cvFileName, setCvFileName] = useState<string>(userFromStore.cv?.split('/').pop() ?? '');
 
     useEffect(() => {
         console.log("userFromStore", userFromStore);
@@ -38,7 +38,7 @@ const UserUpdateInfo = () => {
 
         setUserInfo(updatedUser);
         setAvatarUrl(userFromStore.avatar || '');
-        setCvFileName(userFromStore.cv || '');
+        setCvFileName(userFromStore.cv?.split('/').pop() ?? '');
         form.setFieldsValue(updatedUser);
     }, [userFromStore]);
 
@@ -140,67 +140,92 @@ const UserUpdateInfo = () => {
 
     return (
         <Form form={form} onFinish={onFinish} layout="vertical">
-            <Row gutter={[16, 16]}>
+            <Row gutter={[24, 24]} justify="center">
                 <Col span={24} style={{ textAlign: "center" }}>
-                    <Upload {...uploadAvatarProps}>
+                    <Upload {...uploadAvatarProps} showUploadList={false}>
                         {avatarUrl ? (
                             <img
                                 src={avatarUrl}
                                 alt="avatar"
-                                style={{ width: '100px', height: '100px', borderRadius: '50%', objectFit: 'cover' }}
+                                style={{
+                                    width: 120,
+                                    height: 120,
+                                    borderRadius: "50%",
+                                    objectFit: "cover",
+                                    boxShadow: "0 2px 8px rgba(0, 0, 0, 0.15)",
+                                    cursor: "pointer"
+                                }}
                             />
                         ) : (
-                            <div style={{ border: "1px dashed #d9d9d9", padding: 16, textAlign: "center", borderRadius: 8 }}>
+                            <div
+                                style={{
+                                    width: 120,
+                                    height: 120,
+                                    borderRadius: "50%",
+                                    border: "1px dashed #d9d9d9",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    flexDirection: "column",
+                                    cursor: "pointer",
+                                    backgroundColor: "#fafafa"
+                                }}
+                            >
                                 <PlusOutlined />
-                                <div style={{ marginTop: 8 }}>Upload</div>
+                                <div style={{ marginTop: 8, fontSize: 12 }}>Upload Avatar</div>
                             </div>
                         )}
                     </Upload>
                 </Col>
+
                 <Col span={12}>
                     <Form.Item name="name" label="Họ tên" rules={[{ required: true }]}>
-                        <Input />
+                        <Input size="large" placeholder="Nhập họ tên" />
                     </Form.Item>
                 </Col>
+
                 <Col span={6}>
                     <Form.Item name="age" label="Tuổi">
-                        <Input type="number" />
+                        <Input type="number" size="large" placeholder="Tuổi" />
                     </Form.Item>
                 </Col>
+
                 <Col span={6}>
                     <Form.Item name="gender" label="Giới tính">
-                        <Select>
+                        <Select size="large" placeholder="Chọn giới tính">
                             <Option value="MALE">Nam</Option>
                             <Option value="FEMALE">Nữ</Option>
                             <Option value="OTHER">Khác</Option>
                         </Select>
                     </Form.Item>
                 </Col>
+
                 <Col span={24}>
                     <Form.Item name="address" label="Địa chỉ">
-                        <Input />
+                        <Input size="large" placeholder="Nhập địa chỉ" />
                     </Form.Item>
                 </Col>
 
                 <Col span={24} style={{ textAlign: "center" }}>
-                    <label>Tải lên CV:</label>
-                    <Upload {...uploadCVProps}>
-                        <Button icon={<UploadOutlined />} style={{ marginLeft: 8 }}>Tải CV</Button>
+                    <label style={{ fontWeight: 500, display: "block", marginBottom: 8 }}>Tải lên CV:</label>
+                    <Upload {...uploadCVProps} showUploadList={false}>
+                        <Button icon={<UploadOutlined />} size="large">Tải CV</Button>
                     </Upload>
-                    {(cvFileName) && (
-                        <div style={{ marginTop: 8, fontStyle: "italic" }}>
-                            📄 {cvFileName}
+                    {cvFileName && (
+                        <div style={{ marginTop: 8, fontStyle: "italic", color: "#555" }}>
+                            📄 {decodeURIComponent(cvFileName).replace(/^.*?_/, '')}
                         </div>
                     )}
                 </Col>
 
-                <Col span={24}>
-                    <Button type="primary" htmlType="submit">
+                <Col span={24} style={{ textAlign: "center" }}>
+                    <Button type="primary" htmlType="submit" size="large" style={{ padding: "0 32px" }}>
                         Cập nhật thông tin
                     </Button>
                 </Col>
             </Row>
         </Form>
+
     );
 };
 

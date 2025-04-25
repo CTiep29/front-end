@@ -180,9 +180,7 @@ const ViewUpsertJob = (props: any) => {
             name: values.name,
             skills: arrSkills,
             company: {
-                id: companyId,
-                name: companyLabel,
-                logo: companyLogo
+                id: companyId
             },
             location: values.location,
             salary: values.salary,

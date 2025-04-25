@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CodeOutlined, ContactsOutlined, FireOutlined, HomeOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined } from '@ant-design/icons';
+import { CodeOutlined, ContactsOutlined, FireOutlined, HomeOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
 import { Menu, ConfigProvider } from 'antd';
 import styles from '@/styles/client.module.scss';
@@ -102,7 +102,7 @@ const Header = (props: any) => {
                                     src={logo}
                                     alt="Logo"
                                     onClick={() => navigate('/')}
-                                    style={{ cursor: 'pointer', height: 40, paddingTop: 7 }}
+                                    style={{ cursor: 'pointer', height: 45, paddingTop: 7 }}
                                 />
 
                             </div>
@@ -111,7 +111,7 @@ const Header = (props: any) => {
                                     theme={{
                                         token: {
                                             colorPrimary: '#fff',
-                                            colorBgContainer: '##3399FF',
+                                            colorBgContainer: '#3399FF',
                                             colorText: '#fff',
                                         },
                                     }}
@@ -137,7 +137,10 @@ const Header = (props: any) => {
                                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                             <Space style={{ cursor: "pointer" }}>
                                                 <span>Welcome {user?.name}</span>
-                                                <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar>
+                                                {/* <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar> */}
+                                                <Avatar style={{ backgroundColor: '#fde3cf', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                                                    <UserOutlined style={{ fontSize: 50, paddingLeft: 12, color: '#3399FF' }} />
+                                                </Avatar>
                                             </Space>
                                         </Dropdown>
                                     }

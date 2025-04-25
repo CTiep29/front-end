@@ -101,7 +101,7 @@ export interface IJob {
     skills: ISkill[];
     company?: {
         id: string;
-        name: string;
+        name?: string;
         logo?: string;
     }
     location: string;
