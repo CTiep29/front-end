@@ -145,6 +145,7 @@ export interface IResume {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    message?: string;
 }
 
 export interface IPermission {

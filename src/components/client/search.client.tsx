@@ -20,7 +20,7 @@ const SearchClient = () => {
             const queryLocation = searchParams.get("location");
             const querySkills = searchParams.get("skills");
             if (queryLocation) {
-                form.setFieldValue("location", queryLocation.split(","));
+                form.setFieldValue("location", queryLocation);
             }
             if (querySkills) {
                 form.setFieldValue("skills", querySkills.split(","));
@@ -42,23 +42,39 @@ const SearchClient = () => {
             setOptionsSkills(arr);
         }
     };
-
+    const encodeParams = (params: Record<string, string | string[]>) => {
+        const query = new URLSearchParams();
+        for (const key in params) {
+            const value = params[key];
+            if (Array.isArray(value)) {
+                query.set(key, value.join(","));
+            } else {
+                query.set(key, value);
+            }
+        }
+        return query.toString();
+    };
     const onFinish = async (values: any) => {
-        let query = "";
+
+        const params: Record<string, string | string[]> = {};
+
         if (values?.location?.length) {
-            query = `location=${values.location.join(",")}`;
+            params["location"] = values.location;
         }
         if (values?.skills?.length) {
-            query += query ? `&skills=${values.skills.join(",")}` : `skills=${values.skills.join(",")}`;
+            params.skills = values.skills;
         }
 
-        if (!query) {
+        if (!params["location"] && !params.skills) {
             notification.error({
                 message: 'Có lỗi xảy ra',
                 description: "Vui lòng chọn tiêu chí để tìm kiếm"
             });
             return;
         }
+
+        const query = encodeParams(params);
+        console.log("Query string gửi đi:", query);
         navigate(`/job?${query}`);
     };
 
@@ -105,7 +121,7 @@ const SearchClient = () => {
                     <Col xs={12} md={4}>
                         <ProForm.Item name="location">
                             <Select
-                                mode="multiple"
+                                //mode="multiple"
                                 allowClear
                                 suffixIcon={null}
                                 style={{ width: '100%' }}

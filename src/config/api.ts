@@ -262,4 +262,11 @@ export const callFetchSubscriber = (query: string) => {
 export const callFetchSubscriberById = (id: string) => {
     return axios.get<IBackendRes<ISubscribers>>(`/api/v1/subscribers/${id}`);
 }
+/**
+ * 
+
+ */
+export const fetchDashboardStats = () => {
+    return axios.get("/api/v1/stats");
+};
 

@@ -24,20 +24,18 @@ const JobPage = () => {
     const navigate = useNavigate();
 
     const handleDeleteJob = async (id: string | undefined) => {
-        if (id) {
+        if (!id) return;
+        try {
             const res = await callDeleteJob(id);
-            if (res && res.data) {
-                message.success('Xóa Job thành công');
-                reloadTable();
-            } else {
-                notification.error({
-                    message: 'Có lỗi xảy ra',
-                    description: res.message
-                });
-            }
+            message.success("Xóa Job thành công");
+            reloadTable();
+        } catch (error: any) {
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description: error?.response?.data?.message || "Xóa job thất bại"
+            });
         }
-    }
-
+    };
     const reloadTable = () => {
         tableRef?.current?.reload();
     }

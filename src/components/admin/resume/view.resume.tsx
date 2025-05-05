@@ -12,6 +12,7 @@ interface IProps {
     setDataInit: (v: any) => void;
     reloadTable: () => void;
 }
+
 const ViewDetailResume = (props: IProps) => {
     const [isSubmit, setIsSubmit] = useState<boolean>(false);
     const { onClose, open, dataInit, setDataInit, reloadTable } = props;
@@ -24,14 +25,29 @@ const ViewDetailResume = (props: IProps) => {
         const res = await callUpdateResumeStatus(dataInit?.id, status)
         if (res.data) {
             message.success("Update Resume status thành công!");
+            if (res.data?.message?.includes("tuyển đủ")) {
+                notification.info({
+                    message: "Đã tuyển đủ ứng viên",
+                    description: res.data.message,
+                    duration: 6
+                });
+            }
             setDataInit(null);
             onClose(false);
             reloadTable();
         } else {
-            notification.error({
-                message: 'Có lỗi xảy ra',
-                description: res.message
-            });
+            if (res?.message?.includes("đạt giới hạn")) {
+                notification.warning({
+                    message: "Không thể tuyển thêm",
+                    description: "Số lượng ứng viên đã đạt giới hạn cho công việc này.",
+                    duration: 5
+                });
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: res.message || "Lỗi không xác định"
+                });
+            }
         }
 
         setIsSubmit(false);
@@ -64,6 +80,16 @@ const ViewDetailResume = (props: IProps) => {
             >
                 <Descriptions title="" bordered column={2} layout="vertical">
                     <Descriptions.Item label="Email">{dataInit?.email}</Descriptions.Item>
+                    <Descriptions.Item label="CV">
+                        {dataInit?.url ? (
+                            <a href={dataInit.url} target="_blank" rel="noopener noreferrer">
+                                Xem CV
+                            </a>
+                        ) : (
+                            "Không có CV"
+                        )}
+                    </Descriptions.Item>
+
                     <Descriptions.Item label="Trạng thái">
                         <Form
                             form={form}
@@ -80,6 +106,7 @@ const ViewDetailResume = (props: IProps) => {
                                     <Option value="REVIEWING">REVIEWING</Option>
                                     <Option value="APPROVED">APPROVED</Option>
                                     <Option value="REJECTED">REJECTED</Option>
+                                    <Option value="HIRED">HIRED</Option>
                                 </Select>
                             </Form.Item>
                         </Form>

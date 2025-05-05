@@ -74,11 +74,13 @@ const UserResume = () => {
                     case "PENDING":
                         return "Chờ duyệt";
                     case "APPROVED":
-                        return "Được mời phỏng vấn";
+                        return "Mời phỏng vấn";
                     case "REJECTED":
                         return "Bị từ chối";
                     case "INTERVIEW_CONFIRMED":
                         return "Đã xác nhận phỏng vấn";
+                    case "HIRED":
+                        return "Đã tuyển";
                     default:
                         return value;
                 }

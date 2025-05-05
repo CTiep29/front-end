@@ -20,6 +20,7 @@ const ResumePage = () => {
     const isFetching = useAppSelector(state => state.resume.isFetching);
     const meta = useAppSelector(state => state.resume.meta);
     const resumes = useAppSelector(state => state.resume.result);
+    console.log("Resumes list:", resumes);
     const dispatch = useAppDispatch();
 
     const [dataInit, setDataInit] = useState<IResume | null>(null);
@@ -75,12 +76,13 @@ const ResumePage = () => {
                         REVIEWING: 'REVIEWING',
                         APPROVED: 'APPROVED',
                         REJECTED: 'REJECTED',
+                        INTERVIEW_CONFIRMED: 'INTERVIEW_CONFIRMED',
+                        HIRED: 'HIRED'
                     }}
                     placeholder="Chọn level"
                 />
             ),
         },
-
         {
             title: 'Job',
             dataIndex: ["job", "name"],
@@ -165,7 +167,6 @@ const ResumePage = () => {
             clone.filter = sfIn("status", clone.status).toString();
             delete clone.status;
         }
-
         clone.page = clone.current;
         clone.size = clone.pageSize;
 
@@ -188,7 +189,7 @@ const ResumePage = () => {
 
         //mặc định sort theo updatedAt
         if (Object.keys(sortBy).length === 0) {
-            temp = `${temp}&sort=updatedAt,desc`;
+            temp = `${temp}&sort=createdAt,asc`;
         } else {
             temp = `${temp}&${sortBy}`;
         }

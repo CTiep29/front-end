@@ -53,7 +53,7 @@ const ViewUpsertJob = (props: any) => {
             console.log("📌 [CHECK USER] ", user);
             console.log("📌 [CHECK company_id from user]", user?.company_id);
 
-            // Nếu chưa có company_id, gọi lại API /auth/account (tạm thời patch lỗi)
+            // Nếu chưa có company_id, gọi lại API /auth/account
             if (!user?.company_id) {
                 (async () => {
                     const res = await callFetchAccount(); // <- API call lại /auth/account
@@ -118,7 +118,9 @@ const ViewUpsertJob = (props: any) => {
                             key: job.company?.id
                         },
                         companyLabel: job.company?.name,
-                        skills: tempSkills
+                        skills: tempSkills,
+                        startDate: job.startDate ? dayjs(job.startDate) : undefined,
+                        endDate: job.endDate ? dayjs(job.endDate) : undefined
                     });
 
 
@@ -257,12 +259,11 @@ const ViewUpsertJob = (props: any) => {
                                 />
                             </Col>
                             <Col span={24} md={6}>
-                                <ProFormSelect
+                                <ProFormText
                                     name="location"
-                                    label="Địa điểm"
-                                    options={LOCATION_LIST.filter(item => item.value !== 'ALL')}
-                                    placeholder="Please select a location"
-                                    rules={[{ required: true, message: 'Vui lòng chọn địa điểm!' }]}
+                                    label="Địa điểm công ty"
+                                    placeholder="Nhập địa chỉ công ty"
+                                    rules={[{ required: true, message: 'Vui lòng nhập địa điểm!' }]}
                                 />
                             </Col>
                             <Col span={24} md={6}>
@@ -318,7 +319,6 @@ const ViewUpsertJob = (props: any) => {
                                 <ProFormDatePicker
                                     label="Ngày bắt đầu"
                                     name="startDate"
-                                    normalize={value => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{ format: 'DD/MM/YYYY' }}
                                     rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu' }]}
                                     placeholder="dd/mm/yyyy"
@@ -328,7 +328,6 @@ const ViewUpsertJob = (props: any) => {
                                 <ProFormDatePicker
                                     label="Ngày kết thúc"
                                     name="endDate"
-                                    normalize={value => value && dayjs(value, 'DD/MM/YYYY')}
                                     fieldProps={{ format: 'DD/MM/YYYY' }}
                                     rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc' }]}
                                     placeholder="dd/mm/yyyy"

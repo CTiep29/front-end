@@ -41,10 +41,20 @@ const ApplyModal = (props: IProps) => {
                     message.success("Rải CV thành công!");
                     setIsModalOpen(false);
                 } else {
-                    notification.error({
-                        message: 'Có lỗi xảy ra',
-                        description: res.message
-                    });
+                    // Kiểm tra nếu message là 'Ứng viên đã ứng tuyển...'
+                    if (res.message?.includes("ứng tuyển công việc này rồi")) {
+                        notification.warning({
+                            message: 'Ứng tuyển thất bại',
+                            description: res.message,
+                            duration: 5
+                        });
+                    } else {
+                        notification.error({
+                            message: 'Có lỗi xảy ra',
+                            description: res.message,
+                            duration: 5
+                        });
+                    }
                 }
             }
         }

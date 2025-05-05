@@ -5,7 +5,7 @@ import { callFetchJobById } from "@/config/api";
 import styles from 'styles/client.module.scss';
 import parse from 'html-react-parser';
 import { Col, Divider, Row, Skeleton, Tag } from "antd";
-import { DollarOutlined, EnvironmentOutlined, HistoryOutlined } from "@ant-design/icons";
+import { DollarOutlined, EnvironmentOutlined, HistoryOutlined, HourglassOutlined } from "@ant-design/icons";
 import { getLocationName } from "@/config/utils";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
@@ -70,10 +70,13 @@ const ClientJobDetailPage = (props: any) => {
                                     <span>&nbsp;{(jobDetail.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</span>
                                 </div>
                                 <div className={styles["location"]}>
-                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(jobDetail.location)}
+                                    <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{jobDetail.location}
                                 </div>
-                                <div>
-                                    <HistoryOutlined /> {jobDetail.updatedAt ? dayjs(jobDetail.updatedAt).locale("en").fromNow() : dayjs(jobDetail.createdAt).locale("en").fromNow()}
+                                <div className={styles["startDate"]}>
+                                    <HistoryOutlined /> {jobDetail.startDate ? dayjs(jobDetail.startDate).locale("en").fromNow() : dayjs(jobDetail.startDate).locale("en").fromNow()}
+                                </div>
+                                <div className={styles["endDate"]}>
+                                    <HourglassOutlined /> Hạn nộp hồ sơ đến: {jobDetail.endDate ? dayjs(jobDetail.endDate).format('DD/MM/YYYY') : "Không có"}
                                 </div>
                                 <Divider />
                                 {parse(jobDetail.description)}
@@ -85,7 +88,6 @@ const ClientJobDetailPage = (props: any) => {
                                         <img
                                             width={"200px"}
                                             alt="example"
-                                            // src={`${import.meta.env.VITE_BACKEND_URL}/storage/company/${jobDetail.company?.logo}`}
                                             src={jobDetail.company?.logo?.startsWith("http") ? jobDetail.company?.logo : `${import.meta.env.VITE_BACKEND_URL}/storage/company/${jobDetail.company?.logo}`}
                                         />
                                     </div>

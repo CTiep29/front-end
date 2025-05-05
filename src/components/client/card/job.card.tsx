@@ -28,7 +28,7 @@ const JobCard = (props: IProps) => {
     const [pageSize, setPageSize] = useState(6);
     const [total, setTotal] = useState(0);
     const [filter, setFilter] = useState("");
-    const [sortQuery, setSortQuery] = useState("sort=updatedAt,desc");
+    const [sortQuery, setSortQuery] = useState("sort=startDate,desc");
     const navigate = useNavigate();
     const [searchParams, setSearchParams] = useSearchParams();
     const location = useLocation();
@@ -40,9 +40,13 @@ const JobCard = (props: IProps) => {
     const fetchJob = async () => {
         setIsLoading(true)
         let query = `page=${current}&size=${pageSize}`;
-        if (filter) {
-            query += `&${filter}`;
-        }
+
+        let finalFilter = filter ? filter : "active=true";
+        query += `&filter=${encodeURIComponent(finalFilter)}`;
+
+        // if (filter) {
+        //     query += `&${filter}`;
+        // }
         if (sortQuery) {
             query += `&${sortQuery}`;
         }
@@ -53,7 +57,7 @@ const JobCard = (props: IProps) => {
         if (queryLocation || querySkills) {
             let q = "";
             if (queryLocation) {
-                q = sfIn("location", queryLocation.split(",")).toString();
+                q = `location ~ '${queryLocation}'`;
             }
 
             if (querySkills) {
@@ -114,15 +118,14 @@ const JobCard = (props: IProps) => {
                                             <div className={styles["card-job-left"]}>
                                                 <img
                                                     alt="example"
-                                                    // src={`${import.meta.env.VITE_BACKEND_URL}/storage/company/${item?.company?.logo}`}
                                                     src={item?.company?.logo?.startsWith("http") ? item?.company?.logo : `${import.meta.env.VITE_BACKEND_URL}/storage/company/${item?.company?.logo}`}
                                                 />
                                             </div>
                                             <div className={styles["card-job-right"]}>
                                                 <div className={styles["job-title"]}>{item.name}</div>
-                                                <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{getLocationName(item.location)}</div>
+                                                <div className={styles["job-location"]}><EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{item.location}</div>
                                                 <div><ThunderboltOutlined style={{ color: 'orange' }} />&nbsp;{(item.salary + "")?.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} đ</div>
-                                                <div className={styles["job-updatedAt"]}>{item.updatedAt ? dayjs(item.updatedAt).locale('en').fromNow() : dayjs(item.createdAt).locale('en').fromNow()}</div>
+                                                <div className={styles["job-updatedAt"]}>{item.startDate ? dayjs(item.startDate).locale('en').fromNow() : dayjs(item.startDate).locale('en').fromNow()}</div>
                                             </div>
                                         </div>
 
