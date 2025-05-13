@@ -63,29 +63,40 @@ const Header = (props: any) => {
     }
 
     const itemsDropdown = [
-        {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={() => setOpenManageAccount(true)}
-            >Quản lý tài khoản</label>,
+        ...(Number(user.role?.id) !== 1 ? [{
+            label: (
+                <label
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => setOpenManageAccount(true)}
+                >
+                    Quản lý tài khoản
+                </label>
+            ),
             key: 'manage-account',
-            icon: <ContactsOutlined />
-        },
+            icon: <ContactsOutlined />,
+        }] : []),
+
         ...(user.role?.permissions?.length ? [{
-            label: <Link
-                to={"/admin"}
-            >Trang Quản Trị</Link>,
+            label: (
+                <Link to={"/admin"}>
+                    Trang Quản Trị
+                </Link>
+            ),
             key: 'admin',
-            icon: <FireOutlined />
-        },] : []),
+            icon: <FireOutlined />,
+        }] : []),
 
         {
-            label: <label
-                style={{ cursor: 'pointer' }}
-                onClick={() => handleLogout()}
-            >Đăng xuất</label>,
+            label: (
+                <label
+                    style={{ cursor: 'pointer' }}
+                    onClick={() => handleLogout()}
+                >
+                    Đăng xuất
+                </label>
+            ),
             key: 'logout',
-            icon: <LogoutOutlined />
+            icon: <LogoutOutlined />,
         },
     ];
 

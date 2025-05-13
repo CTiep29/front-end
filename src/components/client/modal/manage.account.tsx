@@ -1,9 +1,9 @@
-import { Button, Col, Form, Input, Modal, Row, Select, Table, Tabs, message, notification, } from "antd";
+import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table, Tabs, message, notification, } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from "antd";
 import { IResume, ISubscribers } from "@/types/backend";
 import { useState, useEffect } from "react";
-import { callChangePassword, callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callUpdateResumeStatus, } from "@/config/api";
+import { callChangePassword, callCreateSubscriber, callFetchAllSkill, callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber, callUpdateResumeStatus, callSendEmailJobs, callDeleteSubscriber } from "@/config/api";
 import type { ColumnsType } from "antd/es/table";
 import dayjs from "dayjs";
 import { MonitorOutlined } from "@ant-design/icons";
@@ -14,12 +14,10 @@ interface IProps {
     open: boolean;
     onClose: (v: boolean) => void;
 }
-
 const UserResume = () => {
     const [listCV, setListCV] = useState<IResume[]>([]);
     const [isFetching, setIsFetching] = useState<boolean>(false);
     const user = useAppSelector((state) => state.account.user);
-
     const fetchData = async () => {
         setIsFetching(true);
         const res = await callFetchResumeByUser();
@@ -123,7 +121,7 @@ const JobByEmail = () => {
     const user = useAppSelector((state) => state.account.user);
     const [optionsSkills, setOptionsSkills] = useState<{ label: string; value: string }[]>([]);
     const [subscriber, setSubscriber] = useState<ISubscribers | null>(null);
-
+    const [loading, setLoading] = useState(false);
     useEffect(() => {
         const init = async () => {
             await fetchSkill();
@@ -156,8 +154,15 @@ const JobByEmail = () => {
     }
 
     const onFinish = async (values: any) => {
-        const skills = values.skills?.map((item: any) => ({ id: item.id || item }));
+        // const skills = values.skills?.map((item: any) => ({ id: item.id || item }));
+        const skills = values.skills?.map((item: any) => {
+            if (typeof item === "string" || typeof item === "number") {
+                return { id: item };
+            }
+            return { id: item.value ?? item.id };
+        });
 
+        setLoading(true);
         try {
             let res;
             if (!subscriber?.id) {
@@ -174,16 +179,23 @@ const JobByEmail = () => {
             }
 
             if (res?.data) {
-                message.success("Cập nhật thông tin thành công");
                 setSubscriber(res.data);
+                message.success("Cập nhật kỹ năng thành công!");
+                notification.info({
+                    message: "Đăng ký nhận email thành công",
+                    description: "Emails sẽ được gửi đến bạn lúc 9h sáng hàng ngày.",
+                });
             } else {
                 notification.error({
-                    message: "Có lỗi xảy ra",
-                    description: res.message,
+                    message: "Cập nhật thất bại",
+                    description: res.message || "Vui lòng thử lại.",
                 });
             }
-        } catch {
-            message.error("Lỗi khi gửi thông tin");
+        } catch (err) {
+            console.error("Lỗi khi cập nhật/kích hoạt gửi email:", err);
+            message.error("Có lỗi xảy ra khi gửi thông tin.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -212,8 +224,35 @@ const JobByEmail = () => {
                     </Form.Item>
                 </Col>
                 <Col span={24}>
-                    <Button onClick={() => form.submit()} type="primary" htmlType="submit" size="large" style={{ padding: "0 32px" }}>Cập nhật</Button>
+                    {/* <Button onClick={() => form.submit()} type="primary" htmlType="submit" size="large" style={{ padding: "0 32px" }}>Cập nhật</Button> */}
+                    <Button type="primary" htmlType="submit" size="large" style={{ padding: "0 32px" }}>Cập nhật</Button>
                 </Col>
+                {subscriber?.id && (
+                    <Col span={24}>
+                        <Popconfirm
+                            title="Huỷ đăng ký"
+                            description="Bạn có chắc chắn muốn huỷ đăng ký nhận email việc làm?"
+                            onConfirm={async () => {
+                                try {
+                                    if (subscriber.id) {
+                                        await callDeleteSubscriber(subscriber.id);
+                                    }
+                                    message.success("Huỷ đăng ký nhận email thành công!");
+                                    setSubscriber(null);
+                                    form.resetFields(); // clear form
+                                } catch (error) {
+                                    console.error("Lỗi khi huỷ đăng ký:", error);
+                                    message.error("Có lỗi xảy ra khi huỷ đăng ký.");
+                                }
+                            }}
+                            okText="Đồng ý"
+                            cancelText="Huỷ"
+                        >
+                            <Button danger size="large">Huỷ đăng ký nhận email</Button>
+                        </Popconfirm>
+                    </Col>
+                )}
+
             </Row>
         </Form>
     );
@@ -285,29 +324,44 @@ const ChangePassword = () => {
 
 const ManageAccount = (props: IProps) => {
     const { open, onClose } = props;
+    const user = useAppSelector((state) => state.account.user);
+    const items: TabsProps["items"] =
+        Number(user.role?.id) === 2
+            ? [
+                {
+                    key: "user-update-info",
+                    label: `Cập nhật thông tin`,
+                    children: <UserUpdateInfo />,
+                },
+                {
+                    key: "user-password",
+                    label: `Thay đổi mật khẩu`,
+                    children: <ChangePassword />,
+                },
+            ]
+            : [
+                {
+                    key: "user-resume",
+                    label: `Ứng tuyển`,
+                    children: <UserResume />,
+                },
+                {
+                    key: "email-by-skills",
+                    label: `Nhận Jobs qua Email`,
+                    children: <JobByEmail />,
+                },
+                {
+                    key: "user-update-info",
+                    label: `Cập nhật thông tin`,
+                    children: <UserUpdateInfo />,
+                },
+                {
+                    key: "user-password",
+                    label: `Thay đổi mật khẩu`,
+                    children: <ChangePassword />,
+                },
+            ];
 
-    const items: TabsProps["items"] = [
-        {
-            key: "user-resume",
-            label: `Ứng tuyển`,
-            children: <UserResume />,
-        },
-        {
-            key: "email-by-skills",
-            label: `Nhận Jobs qua Email`,
-            children: <JobByEmail />,
-        },
-        {
-            key: "user-update-info",
-            label: `Cập nhật thông tin`,
-            children: <UserUpdateInfo />,
-        },
-        {
-            key: "user-password",
-            label: `Thay đổi mật khẩu`,
-            children: <ChangePassword />,
-        },
-    ];
 
     return (
         <Modal
@@ -320,7 +374,7 @@ const ManageAccount = (props: IProps) => {
             width={isMobile ? "100%" : "1000px"}
         >
             <div style={{ minHeight: 400 }}>
-                <Tabs defaultActiveKey="user-resume" items={items} />
+                <Tabs defaultActiveKey={user.role?.id === "2" ? "user-update-info" : "user-resume"} items={items} />
             </div>
         </Modal>
     );

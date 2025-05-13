@@ -206,17 +206,20 @@ const UserUpdateInfo = () => {
                     </Form.Item>
                 </Col>
 
-                <Col span={24} style={{ textAlign: "center" }}>
-                    <label style={{ fontWeight: 500, display: "block", marginBottom: 8 }}>Tải lên CV:</label>
-                    <Upload {...uploadCVProps} showUploadList={false}>
-                        <Button icon={<UploadOutlined />} size="large">Tải CV</Button>
-                    </Upload>
-                    {cvFileName && (
-                        <div style={{ marginTop: 8, fontStyle: "italic", color: "#555" }}>
-                            📄 {decodeURIComponent(cvFileName).replace(/^.*?_/, '')}
-                        </div>
-                    )}
-                </Col>
+                {Number(userFromStore.role?.id) !== 2 && (
+                    <Col span={24} style={{ textAlign: "center" }}>
+                        <label style={{ fontWeight: 500, display: "block", marginBottom: 8 }}>Tải lên CV:</label>
+                        <Upload {...uploadCVProps} showUploadList={false}>
+                            <Button icon={<UploadOutlined />} size="large">Tải CV</Button>
+                        </Upload>
+                        {cvFileName && (
+                            <div style={{ marginTop: 8, fontStyle: "italic", color: "#555" }}>
+                                📄 {decodeURIComponent(cvFileName).replace(/^.*?_/, '')}
+                            </div>
+                        )}
+                    </Col>
+                )}
+
 
                 <Col span={24} style={{ textAlign: "center" }}>
                     <Button type="primary" htmlType="submit" size="large" style={{ padding: "0 32px" }}>

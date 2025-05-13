@@ -10,6 +10,8 @@ import {
     AliwangwangOutlined,
     BugOutlined,
     ScheduleOutlined,
+    HomeOutlined,
+    LogoutOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button } from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -144,6 +146,7 @@ const LayoutAdmin = () => {
         {
             label: <Link to={'/'}>Trang chủ</Link>,
             key: 'home',
+            icon: <HomeOutlined />
         },
         {
             label: <label
@@ -151,6 +154,7 @@ const LayoutAdmin = () => {
                 onClick={() => handleLogout()}
             >Đăng xuất</label>,
             key: 'logout',
+            icon: <LogoutOutlined />
         },
     ];
 

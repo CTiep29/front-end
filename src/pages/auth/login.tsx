@@ -20,10 +20,9 @@ const LoginPage = () => {
     useEffect(() => {
         //đã login => redirect to '/'
         if (isAuthenticated) {
-            // navigate('/');
-            window.location.href = '/';
+            navigate('/');
         }
-    }, [])
+    }, [isAuthenticated, navigate])
 
     const onFinish = async (values: any) => {
         const { username, password } = values;
@@ -35,7 +34,12 @@ const LoginPage = () => {
             localStorage.setItem('access_token', res.data.access_token);
             dispatch(setUserLoginInfo(res.data.user))
             message.success('Đăng nhập tài khoản thành công!');
-            window.location.href = callback ? callback : '/';
+            // Kiểm tra role để chuyển hướng
+            if (Number(res.data.user.role.id) === 1 || Number(res.data.user.role.id) === 2) {
+                navigate('/admin');
+            } else {
+                navigate(callback || '/');
+            }
         } else {
             notification.error({
                 message: "Có lỗi xảy ra",
