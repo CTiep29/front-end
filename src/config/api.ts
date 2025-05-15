@@ -1,5 +1,6 @@
 import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers } from '@/types/backend';
 import axios from 'config/axios-customize';
+import { jwtDecode } from 'jwt-decode';
 
 /**
  * 
@@ -28,6 +29,25 @@ export const callRefreshToken = () => {
 export const callLogout = () => {
     return axios.post<IBackendRes<string>>('/api/v1/auth/logout')
 }
+
+export const callGoogleLogin = (credential: string) => {
+    // Xóa token cũ nếu có
+    localStorage.removeItem('access_token');
+    
+    return axios.post<IBackendRes<IAccount>>(
+        '/api/v1/auth/oauth2-login',
+        { credential },
+        {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            }
+        }
+    );
+};
+
+
 
 /**
  * Upload single file

@@ -14,23 +14,34 @@ interface AccessTokenResponse {
 
 const instance = axiosClient.create({
     baseURL: import.meta.env.VITE_BACKEND_URL as string,
-    withCredentials: true
+    withCredentials: true,
+    headers: {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+    }
 });
 
 const mutex = new Mutex();
 const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null> => {
-    return await mutex.runExclusive(async () => {
-        const res = await instance.get<IBackendRes<AccessTokenResponse>>('/api/v1/auth/refresh');
-        if (res && res.data) return res.data.access_token;
-        else return null;
-    });
+    try {
+        return await mutex.runExclusive(async () => {
+            const res = await instance.get<IBackendRes<AccessTokenResponse>>('/api/v1/auth/refresh');
+            if (res && res.data) return res.data.access_token;
+            return null;
+        });
+    } catch (error) {
+        console.error('Refresh token error:', error);
+        return null;
+    }
 };
 
 instance.interceptors.request.use(function (config) {
-    if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
-        config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+    if (config.url !== '/api/v1/auth/oauth2-login') {
+        if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
+            config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+        }
     }
     if (!config.headers.Accept && config.headers["Content-Type"]) {
         config.headers.Accept = "application/json";
@@ -46,9 +57,19 @@ instance.interceptors.request.use(function (config) {
 instance.interceptors.response.use(
     (res) => res.data,
     async (error) => {
+        if (!error || !error.response) {
+            notification.error({
+                message: "Lỗi kết nối",
+                description: "Không thể kết nối đến server. Vui lòng thử lại sau.",
+                duration: 5
+            });
+            return Promise.reject(error);
+        }
+
         if (error.config && error.response
             && +error.response.status === 401
             && error.config.url !== '/api/v1/auth/login'
+            && error.config.url !== '/api/v1/auth/oauth2-login'
             && !error.config.headers[NO_RETRY_HEADER]
         ) {
             const access_token = await handleRefreshToken();
@@ -64,17 +85,19 @@ instance.interceptors.response.use(
             error.config && error.response
             && +error.response.status === 400
             && error.config.url === '/api/v1/auth/refresh'
-            && location.pathname.startsWith("/admin")
         ) {
-            const message = error?.response?.data?.error ?? "Có lỗi xảy ra, vui lòng login.";
-            //dispatch redux action
+            const message = error?.response?.data?.error ?? "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.";
             store.dispatch(setRefreshTokenAction({ status: true, message }));
+            localStorage.removeItem('access_token');
+            if (location.pathname.startsWith("/admin")) {
+                window.location.href = '/login';
+            }
         }
 
-        if (+error.response.status === 403) {
+        if (error.response?.status === 403) {
             notification.error({
-                message: error?.response?.data?.message ?? "",
-                description: error?.response?.data?.error ?? ""
+                message: error?.response?.data?.message ?? "Không có quyền truy cập",
+                description: error?.response?.data?.error ?? "Bạn không có quyền thực hiện hành động này"
             })
         }
 
