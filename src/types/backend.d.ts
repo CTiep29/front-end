@@ -38,6 +38,7 @@ export interface IAccount {
                 module: string;
             }[]
         }
+        active?: boolean;
     }
 }
 
@@ -55,6 +56,7 @@ export interface ICompany {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    active?: boolean;
 }
 
 export interface ISkill {
@@ -66,8 +68,6 @@ export interface ISkill {
     createdAt?: string;
     updatedAt?: string;
 }
-
-
 
 export interface IUser {
     id?: string;
@@ -83,7 +83,6 @@ export interface IUser {
         id: string;
         name: string;
     }
-
     company?: {
         id: string;
         name: string;
@@ -93,12 +92,13 @@ export interface IUser {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+    active?: boolean;
 }
 
 export interface IJob {
     id?: string;
     name: string;
-    skills: ISkill[];
+    skills: string[];
     company?: {
         id: string;
         name?: string;
@@ -112,6 +112,7 @@ export interface IJob {
     startDate: Date;
     endDate: Date;
     active: boolean;
+    jobType?: string;
 
     createdBy?: string;
     isDeleted?: boolean;
@@ -187,4 +188,63 @@ export interface ISubscribers {
     deletedAt?: boolean | null;
     createdAt?: string;
     updatedAt?: string;
+}
+
+export interface IDashboardStats {
+    totalJobs: number;
+    totalCompanies: number;
+    totalUsers: number;
+    activeJobsByCompany: Array<{
+        companyName: string;
+        activeJobs: number;
+    }>;
+}
+
+export interface ITimeSeriesStats {
+    newJobsByMonth: { month: string; count: number }[];
+    newUsersByMonth: { month: string; count: number }[];
+}
+
+export interface ICompanyStats {
+    totalJobs: number;
+    activeJobs: number;
+    resumeStats: {
+        totalResumes: number;
+        byStatus: Array<{
+            status: string;
+            count: number;
+        }>;
+        byJob: Array<{
+            jobName: string;
+            count: number;
+        }>;
+    };
+}
+
+export interface DashboardStats {
+    totalJobs: number;
+    totalCompanies: number;
+    totalUsers: number;
+    newJobsByMonth: { month: string; count: number }[];
+    newUsersByMonth: { month: string; count: number }[];
+    activeJobsByCompany: Array<{
+        companyName: string;
+        activeJobs: number;
+    }>;
+}
+
+export interface CompanyStats {
+    totalJobs: number;
+    activeJobs: number;
+    resumeStats: {
+        totalResumes: number;
+        byStatus: Array<{
+            status: string;
+            count: number;
+        }>;
+        byJob: Array<{
+            jobName: string;
+            count: number;
+        }>;
+    };
 }

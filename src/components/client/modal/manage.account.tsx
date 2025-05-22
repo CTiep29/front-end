@@ -347,7 +347,7 @@ const ManageAccount = (props: IProps) => {
                 },
                 {
                     key: "email-by-skills",
-                    label: `Nhận Jobs qua Email`,
+                    label: `Nhận công việc qua Email`,
                     children: <JobByEmail />,
                 },
                 {

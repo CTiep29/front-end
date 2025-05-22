@@ -25,7 +25,7 @@ const ApplyModal = (props: IProps) => {
 
     const handleOkButton = async () => {
         if (!urlCV && isAuthenticated) {
-            message.error("Vui lòng upload CV!");
+            message.error("Vui lòng tải lên CV!");
             return;
         }
 
@@ -38,10 +38,9 @@ const ApplyModal = (props: IProps) => {
             if (jobDetail) {
                 const res = await callCreateResume(urlCV, jobDetail?.id, user.email, user.id);
                 if (res.data) {
-                    message.success("Rải CV thành công!");
+                    message.success("Ứng tuyển thành công!");
                     setIsModalOpen(false);
                 } else {
-                    // Kiểm tra nếu message là 'Ứng viên đã ứng tuyển...'
                     if (res.message?.includes("ứng tuyển công việc này rồi")) {
                         notification.warning({
                             message: 'Ứng tuyển thất bại',
@@ -82,7 +81,7 @@ const ApplyModal = (props: IProps) => {
                 // console.log(info.file, info.fileList);
             }
             if (info.file.status === 'done') {
-                message.success(`${info.file.name} file uploaded successfully`);
+                message.success(`${info.file.name} đã được tải lên thành công`);
             } else if (info.file.status === 'error') {
                 message.error(info?.file?.error?.event?.message ?? "Đã có lỗi xảy ra khi upload file.")
             }
@@ -132,8 +131,8 @@ const ApplyModal = (props: IProps) => {
                                     </Col>
                                     <Col span={24}>
                                         <ProForm.Item
-                                            label={"Upload file CV"}
-                                            rules={[{ required: true, message: 'Vui lòng upload file!' }]}
+                                            label={"Tải lên CV"}
+                                            rules={[{ required: true, message: 'Vui lòng tải lên CV!' }]}
                                         >
 
                                             <Upload {...propsUpload}>
@@ -148,7 +147,7 @@ const ApplyModal = (props: IProps) => {
                     </div>
                     :
                     <div>
-                        Bạn chưa đăng nhập hệ thống. Vui lòng đăng nhập để có thể "ứng tuyển" bạn nhé -.-
+                        Bạn chưa đăng nhập hệ thống. Vui lòng đăng nhập để có thể ứng tuyển công việc này.
                     </div>
                 }
                 <Divider />

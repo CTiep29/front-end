@@ -94,7 +94,7 @@ const ClientCompanyDetailPage = (props: any) => {
                                                 <div className={styles["skills"]}>
                                                     {job.skills?.map((item, index) => (
                                                         <Tag key={`${index}-key`} color="gold">
-                                                            {item.name}
+                                                            {item}
                                                         </Tag>
                                                     ))}
                                                 </div>

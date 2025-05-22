@@ -16,12 +16,16 @@ const RecruiterCompanyPage = () => {
 
     useEffect(() => {
         const fetchCompany = async () => {
+            if (!user?.company_id) {
+                setLoading(false);
+                return;
+            }
+
             try {
-                if (user?.company_id) {
+                setLoading(true);
                     const res = await callFetchCompanyById(user.company_id);
                     if (res && res.data) {
                         setCompany(res.data);
-                    }
                 }
             } catch (error) {
                 message.error("Không thể tải thông tin công ty.");
@@ -31,11 +35,24 @@ const RecruiterCompanyPage = () => {
         };
 
         fetchCompany();
-    }, [user]);
+    }, [user?.company_id]);
 
-    if (loading) return <Spin spinning={true}>Đang tải dữ liệu...</Spin>;
+    if (loading) {
+        return (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+                <Spin size="large" />
+                <div style={{ marginTop: '20px' }}>Đang tải dữ liệu...</div>
+            </div>
+        );
+    }
 
-    if (!company) return <div>Bạn chưa có công ty nào được liên kết.</div>;
+    if (!company) {
+        return (
+            <div style={{ textAlign: 'center', padding: '50px' }}>
+                <div>Bạn chưa có công ty nào được liên kết.</div>
+            </div>
+        );
+    }
 
     return (
         <>

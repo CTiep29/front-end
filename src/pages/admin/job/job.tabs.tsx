@@ -20,7 +20,7 @@ const JobTabs = () => {
         items = [
             {
                 key: '1',
-                label: 'Manage Jobs In Company',
+                label: 'Công việc của công ty',
                 children: <JobRecruiterPage />,
             }
         ];
@@ -30,12 +30,12 @@ const JobTabs = () => {
         items = [
             {
                 key: '1',
-                label: 'Manage Jobs',
+                label: 'Công việc',
                 children: <JobPage />,
             },
             {
                 key: '2',
-                label: 'Manage Skills',
+                label: 'Kỹ năng',
                 children: <SkillPage />,
             },
         ];

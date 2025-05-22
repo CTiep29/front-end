@@ -9,3 +9,93 @@
         padding: 10px 0 20px 0;
     }
 }
+
+.dashboard-container {
+    padding: 20px;
+    background-color: #f0f2f5;
+    min-height: 100vh;
+
+    .stat-card {
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+
+        &:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .ant-card-head {
+            border-bottom: none;
+            padding: 16px 20px;
+            
+            .ant-card-head-title {
+                color: white;
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+
+        .ant-card-body {
+            padding: 20px;
+        }
+
+        .ant-statistic {
+            .ant-statistic-title {
+                font-size: 14px;
+                margin-bottom: 8px;
+            }
+
+            .ant-statistic-content {
+                font-size: 24px;
+                font-weight: 600;
+
+                .ant-statistic-content-prefix {
+                    margin-right: 8px;
+                }
+            }
+        }
+    }
+
+    .chart-card {
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+
+        .ant-card-head {
+            border-bottom: 1px solid #f0f0f0;
+            padding: 16px 20px;
+
+            .ant-card-head-title {
+                font-size: 16px;
+                font-weight: 600;
+            }
+        }
+
+        .ant-card-body {
+            padding: 20px;
+        }
+    }
+
+    // Gradient backgrounds
+    .blue-gradient {
+        background: linear-gradient(135deg, #1890ff 0%, #096dd9 100%);
+    }
+
+    .green-gradient {
+        background: linear-gradient(135deg, #52c41a 0%, #389e0d 100%);
+    }
+
+    .purple-gradient {
+        background: linear-gradient(135deg, #722ed1 0%, #531dab 100%);
+    }
+
+    // Chart container
+    .chart-container {
+        height: 400px;
+        padding: 10px;
+        background: white;
+        border-radius: 4px;
+    }
+}

@@ -2,7 +2,7 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IResume } from "@/types/backend";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
-import { Space, message, notification } from "antd";
+import { Space, message, notification, Input } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
 import { callDeleteResume } from "@/config/api";
@@ -11,7 +11,7 @@ import { fetchResume } from "@/redux/slice/resumeSlide";
 import ViewDetailResume from "@/components/admin/resume/view.resume";
 import { ALL_PERMISSIONS } from "@/config/permissions";
 import Access from "@/components/share/access";
-import { sfIn } from "spring-filter-query-builder";
+import { sfIn, sfLike } from "spring-filter-query-builder";
 import { EditOutlined } from "@ant-design/icons";
 
 const ResumePage = () => {
@@ -30,7 +30,7 @@ const ResumePage = () => {
         if (id) {
             const res = await callDeleteResume(id);
             if (res && res.data) {
-                message.success('Xóa Resume thành công');
+                message.success('Xóa Hồ sơ thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -80,22 +80,28 @@ const ResumePage = () => {
                         HIRED: 'HIRED'
                     }}
                     placeholder="Chọn level"
+                    fieldProps={{
+                        style: { width: '250px' }
+                    }}
                 />
             ),
         },
         {
-            title: 'Job',
+            title: 'Công việc',
             dataIndex: ["job", "name"],
-            hideInSearch: true,
+            hideInSearch: false,
+            renderFormItem: (item, props, form) => (
+                <Input placeholder="Nhập tên công việc" />
+            ),
         },
         {
-            title: 'Company',
+            title: 'Công ty',
             dataIndex: "companyName",
             hideInSearch: true,
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -107,7 +113,7 @@ const ResumePage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -120,7 +126,7 @@ const ResumePage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 100,
             render: (_value, entity, _index, _action) => (
@@ -167,6 +173,14 @@ const ResumePage = () => {
             clone.filter = sfIn("status", clone.status).toString();
             delete clone.status;
         }
+
+        if (clone?.job?.name) {
+            clone.filter = clone.filter ?
+                clone.filter + " and " + `${sfLike("job.name", clone.job.name)}` :
+                `${sfLike("job.name", clone.job.name)}`;
+            delete clone.job;
+        }
+
         clone.page = clone.current;
         clone.size = clone.pageSize;
 
@@ -205,7 +219,7 @@ const ResumePage = () => {
             >
                 <DataTable<IResume>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Resumes"
+                    headerTitle="Danh sách Hồ sơ"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}

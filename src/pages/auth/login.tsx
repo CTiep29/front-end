@@ -27,6 +27,19 @@ const LoginPage = () => {
         }
     }, [isAuthenticated, navigate, callback]);
 
+    const handleLoginSuccess = (user: any) => {
+        if (user?.role?.id && (Number(user.role.id) === 1 || Number(user.role.id) === 2)) {
+            localStorage.setItem('shouldReload', 'true');
+            localStorage.setItem('redirectPath', '/admin');
+            navigate('/admin');
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
+        } else {
+            navigate(callback || '/');
+        }
+    };
+
     const onFinish = async (values: any) => {
         const { username, password } = values;
         setIsSubmit(true);
@@ -36,11 +49,7 @@ const LoginPage = () => {
                 localStorage.setItem('access_token', res.data.access_token);
                 dispatch(setUserLoginInfo(res.data.user));
                 message.success('Đăng nhập tài khoản thành công!');
-                if (res.data.user.role?.id && (Number(res.data.user.role.id) === 1 || Number(res.data.user.role.id) === 2)) {
-                    navigate('/admin');
-                } else {
-                    navigate(callback || '/');
-                }
+                handleLoginSuccess(res.data.user);
             }
         } catch (error: any) {
             const messageError = error?.response?.data?.message || error?.message || "Đăng nhập thất bại";
@@ -66,23 +75,15 @@ const LoginPage = () => {
 
         try {
             setIsGoogleLoading(true);
-            console.log('Google credential:', credentialResponse.credential);
-            
             const res = await callGoogleLogin(credentialResponse.credential);
-            console.log('Google login response:', res);
             
             if (res?.data) {
                 const { access_token, user } = res.data;
                 if (access_token && user) {
                     localStorage.setItem('access_token', access_token);
                     dispatch(setUserLoginInfo(user));
-                    message.success('Đăng nhập bằng Google thành công!');
-                    
-                    if (user.role?.id && (Number(user.role.id) === 1 || Number(user.role.id) === 2)) {
-                        navigate('/admin');
-                    } else {
-                        navigate(callback || '/');
-                    }
+                message.success('Đăng nhập bằng Google thành công!');
+                    handleLoginSuccess(user);
                 } else {
                     notification.error({
                         message: "Có lỗi xảy ra",

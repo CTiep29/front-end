@@ -24,7 +24,7 @@ const ViewDetailResume = (props: IProps) => {
         const status = form.getFieldValue('status');
         const res = await callUpdateResumeStatus(dataInit?.id, status)
         if (res.data) {
-            message.success("Update Resume status thành công!");
+            message.success("Cập nhật trạng thái hồ sơ thành công!");
             if (res.data?.message?.includes("tuyển đủ")) {
                 notification.info({
                     message: "Đã tuyển đủ ứng viên",
@@ -63,7 +63,7 @@ const ViewDetailResume = (props: IProps) => {
     return (
         <>
             <Drawer
-                title="Thông Tin Resume"
+                title="Thông Tin Hồ sơ"
                 placement="right"
                 onClose={() => { onClose(false); setDataInit(null) }}
                 open={open}
@@ -73,7 +73,7 @@ const ViewDetailResume = (props: IProps) => {
                 extra={
 
                     <Button loading={isSubmit} type="primary" onClick={handleChangeStatus}>
-                        Change Status
+                        Cập nhật
                     </Button>
 
                 }
@@ -112,7 +112,7 @@ const ViewDetailResume = (props: IProps) => {
                         </Form>
 
                     </Descriptions.Item>
-                    <Descriptions.Item label="Tên Job">
+                    <Descriptions.Item label="Tên công việc">
                         {dataInit?.job?.name}
 
                     </Descriptions.Item>

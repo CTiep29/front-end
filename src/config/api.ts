@@ -1,4 +1,4 @@
-import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers } from '@/types/backend';
+import { IBackendRes, ICompany, IAccount, IUser, IModelPaginate, IGetAccount, IJob, IResume, IPermission, IRole, ISkill, ISubscribers, IDashboardStats, ITimeSeriesStats, ICompanyStats } from '@/types/backend';
 import axios from 'config/axios-customize';
 import { jwtDecode } from 'jwt-decode';
 
@@ -86,6 +86,10 @@ export const callDeleteCompany = (id: string) => {
     return axios.delete<IBackendRes<ICompany>>(`/api/v1/companies/${id}`);
 }
 
+export const callRestoreCompany = (id: string) => {
+    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies/${id}/restore`);
+}
+
 export const callFetchCompany = (query: string) => {
     return axios.get<IBackendRes<IModelPaginate<ICompany>>>(`/api/v1/companies?${query}`);
 }
@@ -130,6 +134,10 @@ export const callUpdateUser = (user: IUser) => {
 
 export const callDeleteUser = (id: string) => {
     return axios.delete<IBackendRes<IUser>>(`/api/v1/users/${id}`);
+}
+
+export const callRestoreUser = (id: string) => {
+    return axios.put<IBackendRes<IUser>>(`/api/v1/users/${id}/restore`);
 }
 
 export const callFetchUser = (query: string) => {
@@ -290,7 +298,21 @@ export const callFetchSubscriberById = (id: string) => {
 export const callSendEmailJobs = () => {
     return axios.get(`/api/v1/email`);
 }
+
+/**
+ * Module Dashboard Statistics
+ */
 export const fetchDashboardStats = () => {
-    return axios.get(`/api/v1/stats`);
+    return axios.get<IBackendRes<IDashboardStats>>('/api/v1/stats');
+};
+
+export const fetchTimeSeriesStats = (startDate?: string, endDate?: string) => {
+    return axios.get<IBackendRes<ITimeSeriesStats>>('/api/v1/stats/time-series', {
+        params: { startDate, endDate }
+    });
+};
+
+export const fetchCompanyStats = (companyId: string) => {
+    return axios.get<IBackendRes<ICompanyStats>>(`/api/v1/stats/company/${companyId}`);
 };
 

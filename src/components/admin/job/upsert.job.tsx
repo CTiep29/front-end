@@ -104,7 +104,7 @@ const ViewUpsertJob = (props: any) => {
                         key: job.company?.id
                     }]);
 
-                    const tempSkills = job.skills?.map((item: ISkill) => ({
+                    const tempSkills = (job.skills as ISkill[])?.map((item: ISkill) => ({
                         label: item.name ?? "",
                         value: item.id,
                         key: item.id

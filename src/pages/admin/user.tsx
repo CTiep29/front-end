@@ -2,12 +2,12 @@ import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { fetchUser } from "@/redux/slice/userSlide";
 import { IUser } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, EyeOutlined, UndoOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns } from '@ant-design/pro-components';
-import { Button, Popconfirm, Space, message, notification } from "antd";
+import { Button, Popconfirm, Space, message, notification, Tag } from "antd";
 import { useState, useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteUser } from "@/config/api";
+import { callDeleteUser, callRestoreUser } from "@/config/api";
 import queryString from 'query-string';
 import ModalUser from "@/components/admin/user/modal.user";
 import ViewDetailUser from "@/components/admin/user/view.user";
@@ -31,7 +31,22 @@ const UserPage = () => {
         if (id) {
             const res = await callDeleteUser(id);
             if (+res.statusCode === 200) {
-                message.success('Xóa User thành công');
+                message.success('Xóa mềm Tài khoản thành công');
+                reloadTable();
+            } else {
+                notification.error({
+                    message: 'Có lỗi xảy ra',
+                    description: res.message
+                });
+            }
+        }
+    }
+
+    const handleRestoreUser = async (id: string | undefined) => {
+        if (id) {
+            const res = await callRestoreUser(id);
+            if (res && +res.statusCode === 200) {
+                message.success('Khôi phục Tài khoản thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -61,7 +76,7 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Name',
+            title: 'Họ tên',
             dataIndex: 'name',
             sorter: true,
         },
@@ -72,21 +87,35 @@ const UserPage = () => {
         },
 
         {
-            title: 'Role',
+            title: 'Vai trò',
             dataIndex: ["role", "name"],
             sorter: true,
             hideInSearch: true
         },
 
         {
-            title: 'Company',
+            title: 'Công ty',
             dataIndex: ["company", "name"],
             sorter: true,
             hideInSearch: true
         },
 
         {
-            title: 'CreatedAt',
+            title: 'Trạng thái',
+            dataIndex: 'active',
+            render(dom, entity, index, action, schema) {
+                const isActive = entity.active === undefined ? true : entity.active;
+                return <>
+                    <Tag color={isActive ? "lime" : "red"} >
+                        {isActive ? "ACTIVE" : "INACTIVE"}
+                    </Tag>
+                </>
+            },
+            hideInSearch: true,
+        },
+
+        {
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -98,7 +127,7 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -110,54 +139,78 @@ const UserPage = () => {
             hideInSearch: true,
         },
         {
-
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (
                 <Space>
-                    < Access
-                        permission={ALL_PERMISSIONS.USERS.UPDATE}
-                        hideChildren
-                    >
-                        <EditOutlined
-                            style={{
-                                fontSize: 20,
-                                color: '#ffa500',
-                            }}
-                            type=""
-                            onClick={() => {
-                                setOpenModal(true);
-                                setDataInit(entity);
-                            }}
-                        />
-                    </Access >
-
-                    <Access
-                        permission={ALL_PERMISSIONS.USERS.DELETE}
-                        hideChildren
-                    >
-                        <Popconfirm
-                            placement="leftTop"
-                            title={"Xác nhận xóa user"}
-                            description={"Bạn có chắc chắn muốn xóa user này ?"}
-                            onConfirm={() => handleDeleteUser(entity.id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
-                        >
-                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                <DeleteOutlined
+                    {entity.active ? (
+                        <>
+                            <Access
+                                permission={ALL_PERMISSIONS.USERS.UPDATE}
+                                hideChildren
+                            >
+                                <EditOutlined
                                     style={{
                                         fontSize: 20,
-                                        color: '#ff4d4f',
+                                        color: '#ffa500',
+                                    }}
+                                    type=""
+                                    onClick={() => {
+                                        setOpenModal(true);
+                                        setDataInit(entity);
                                     }}
                                 />
-                            </span>
-                        </Popconfirm>
-                    </Access>
-                </Space >
+                            </Access>
+                            <Access
+                                permission={ALL_PERMISSIONS.USERS.DELETE}
+                                hideChildren
+                            >
+                                <Popconfirm
+                                    placement="leftTop"
+                                    title={"Xác nhận xóa tài khoản"}
+                                    description={"Bạn có chắc chắn muốn xóa tài khoản này ?"}
+                                    onConfirm={() => handleDeleteUser(entity.id)}
+                                    okText="Xác nhận"
+                                    cancelText="Hủy"
+                                >
+                                    <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                        <DeleteOutlined
+                                            style={{
+                                                fontSize: 20,
+                                                color: '#ff4d4f',
+                                            }}
+                                        />
+                                    </span>
+                                </Popconfirm>
+                            </Access>
+                        </>
+                    ) : (
+                        <Access
+                            permission={ALL_PERMISSIONS.USERS.UPDATE}
+                            hideChildren
+                        >
+                            <Popconfirm
+                                placement="leftTop"
+                                title={"Xác nhận khôi phục tài khoản"}
+                                description={"Bạn có chắc chắn muốn khôi phục tài khoản này ?"}
+                                onConfirm={() => handleRestoreUser(entity.id)}
+                                okText="Xác nhận"
+                                cancelText="Hủy"
+                            >
+                                <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                    <UndoOutlined
+                                        style={{
+                                            fontSize: 20,
+                                            color: '#1890ff',
+                                        }}
+                                    />
+                                </span>
+                            </Popconfirm>
+                        </Access>
+                    )}
+                </Space>
             ),
-
         },
     ];
 
@@ -193,7 +246,6 @@ const UserPage = () => {
             sortBy = sort.updatedAt === 'ascend' ? "sort=updatedAt,asc" : "sort=updatedAt,desc";
         }
 
-        //mặc định sort theo updatedAt
         if (Object.keys(sortBy).length === 0) {
             temp = `${temp}&sort=updatedAt,desc`;
         } else {
@@ -210,7 +262,7 @@ const UserPage = () => {
             >
                 <DataTable<IUser>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Users"
+                    headerTitle="Danh sách Tài khoản"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}

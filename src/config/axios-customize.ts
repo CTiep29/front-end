@@ -26,6 +26,12 @@ const NO_RETRY_HEADER = 'x-no-retry';
 
 const handleRefreshToken = async (): Promise<string | null> => {
     try {
+        // Kiểm tra xem có refresh token trong localStorage không
+        const refreshToken = localStorage.getItem('refresh_token');
+        if (!refreshToken) {
+            return null;
+        }
+
         return await mutex.runExclusive(async () => {
             const res = await instance.get<IBackendRes<AccessTokenResponse>>('/api/v1/auth/refresh');
             if (res && res.data) return res.data.access_token;
@@ -38,9 +44,11 @@ const handleRefreshToken = async (): Promise<string | null> => {
 };
 
 instance.interceptors.request.use(function (config) {
-    if (config.url !== '/api/v1/auth/oauth2-login') {
-        if (typeof window !== "undefined" && window && window.localStorage && window.localStorage.getItem('access_token')) {
-            config.headers.Authorization = 'Bearer ' + window.localStorage.getItem('access_token');
+    // Chỉ thêm token cho các request không phải là login
+    if (config.url !== '/api/v1/auth/oauth2-login' && config.url !== '/api/v1/auth/login') {
+        const accessToken = localStorage.getItem('access_token');
+        if (accessToken) {
+            config.headers.Authorization = 'Bearer ' + accessToken;
         }
     }
     if (!config.headers.Accept && config.headers["Content-Type"]) {
@@ -66,6 +74,7 @@ instance.interceptors.response.use(
             return Promise.reject(error);
         }
 
+        // Xử lý lỗi 401 - Unauthorized
         if (error.config && error.response
             && +error.response.status === 401
             && error.config.url !== '/api/v1/auth/login'
@@ -78,9 +87,17 @@ instance.interceptors.response.use(
                 error.config.headers['Authorization'] = `Bearer ${access_token}`;
                 localStorage.setItem('access_token', access_token)
                 return instance.request(error.config);
+            } else {
+                // Nếu không refresh được token, chuyển về trang login
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('refresh_token');
+                if (location.pathname.startsWith("/admin")) {
+                    window.location.href = '/login';
+                }
             }
         }
 
+        // Xử lý lỗi 400 khi refresh token
         if (
             error.config && error.response
             && +error.response.status === 400
@@ -89,16 +106,22 @@ instance.interceptors.response.use(
             const message = error?.response?.data?.error ?? "Phiên đăng nhập hết hạn, vui lòng đăng nhập lại.";
             store.dispatch(setRefreshTokenAction({ status: true, message }));
             localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
             if (location.pathname.startsWith("/admin")) {
                 window.location.href = '/login';
             }
         }
 
+        // Xử lý lỗi 403 - Forbidden
         if (error.response?.status === 403) {
             notification.error({
                 message: error?.response?.data?.message ?? "Không có quyền truy cập",
                 description: error?.response?.data?.error ?? "Bạn không có quyền thực hiện hành động này"
-            })
+            });
+            // Nếu là trang admin và không có quyền, chuyển về trang login
+            if (location.pathname.startsWith("/admin")) {
+                window.location.href = '/login';
+            }
         }
 
         return error?.response?.data ?? Promise.reject(error);

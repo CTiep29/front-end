@@ -5,6 +5,7 @@ import { ProForm } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
 import { callFetchAllSkill } from '@/config/api';
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
+import styles from '@/styles/client.module.scss';
 
 const SearchClient = () => {
     const navigate = useNavigate();
@@ -79,13 +80,7 @@ const SearchClient = () => {
     };
 
     return (
-        <div style={{
-            background: '#f0f6ff',
-            padding: '50px 20px',
-            borderRadius: 12,
-            maxWidth: 1000,
-            margin: '30px auto'
-        }}>
+        <div className={styles.searchSection}>
             <ProForm
                 form={form}
                 onFinish={onFinish}
@@ -93,14 +88,8 @@ const SearchClient = () => {
             >
                 <Row gutter={[20, 20]} justify="center">
                     <Col span={24}>
-                        <h1 style={{
-                            fontSize: 28,
-                            fontWeight: 600,
-                            textAlign: 'center',
-                            marginBottom: 20,
-                            color: '#2d5fa5'
-                        }}>
-                            🔍 Tìm Kiếm Việc Làm IT
+                        <h1 className={styles.searchTitle}>
+                            Tìm Kiếm Việc Làm Ngành Công Nghệ Thông Tin
                         </h1>
                     </Col>
 
@@ -111,9 +100,10 @@ const SearchClient = () => {
                                 allowClear
                                 suffixIcon={null}
                                 style={{ width: '100%' }}
-                                placeholder={<><MonitorOutlined /> Chọn kỹ năng...</>}
+                                placeholder={<>Chọn kỹ năng...</>}
                                 optionLabelProp="label"
                                 options={optionsSkills}
+                                className={styles.searchSelect}
                             />
                         </ProForm.Item>
                     </Col>
@@ -121,19 +111,25 @@ const SearchClient = () => {
                     <Col xs={12} md={4}>
                         <ProForm.Item name="location">
                             <Select
-                                //mode="multiple"
                                 allowClear
                                 suffixIcon={null}
                                 style={{ width: '100%' }}
                                 placeholder={<><EnvironmentOutlined /> Địa điểm...</>}
                                 optionLabelProp="label"
                                 options={optionsLocations}
+                                className={styles.searchSelect}
                             />
                         </ProForm.Item>
                     </Col>
 
                     <Col xs={12} md={4}>
-                        <Button type="primary" onClick={() => form.submit()} block size="middle">
+                        <Button 
+                            type="primary" 
+                            onClick={() => form.submit()} 
+                            block 
+                            size="large"
+                            className={styles.searchButton}
+                        >
                             Tìm Việc
                         </Button>
                     </Col>

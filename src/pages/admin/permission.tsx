@@ -31,7 +31,7 @@ const PermissionPage = () => {
         if (id) {
             const res = await callDeletePermission(id);
             if (res && res.statusCode === 200) {
-                message.success('Xóa Permission thành công');
+                message.success('Xóa Quyền hạn thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -64,7 +64,7 @@ const PermissionPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
             sorter: true,
         },
@@ -74,7 +74,7 @@ const PermissionPage = () => {
             sorter: true,
         },
         {
-            title: 'Method',
+            title: 'Phương thức',
             dataIndex: 'method',
             sorter: true,
             render(dom, entity, index, action, schema) {
@@ -84,12 +84,12 @@ const PermissionPage = () => {
             },
         },
         {
-            title: 'Module',
+            title: 'Đơn vị',
             dataIndex: 'module',
             sorter: true,
         },
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -101,7 +101,7 @@ const PermissionPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -114,7 +114,7 @@ const PermissionPage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (
@@ -141,8 +141,8 @@ const PermissionPage = () => {
                     >
                         <Popconfirm
                             placement="leftTop"
-                            title={"Xác nhận xóa permission"}
-                            description={"Bạn có chắc chắn muốn xóa permission này ?"}
+                            title={"Xác nhận xóa quyền hạn"}
+                            description={"Bạn có chắc chắn muốn xóa quyền hạn này ?"}
                             onConfirm={() => handleDeletePermission(entity.id)}
                             okText="Xác nhận"
                             cancelText="Hủy"
@@ -216,7 +216,7 @@ const PermissionPage = () => {
             >
                 <DataTable<IPermission>
                     actionRef={tableRef}
-                    headerTitle="Danh sách Permissions (Quyền Hạn)"
+                    headerTitle="Danh sách Quyền Hạn"
                     rowKey="id"
                     loading={isFetching}
                     columns={columns}

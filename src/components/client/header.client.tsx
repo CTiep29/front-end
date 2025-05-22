@@ -147,7 +147,7 @@ const Header = (props: any) => {
                                         :
                                         <Dropdown menu={{ items: itemsDropdown }} trigger={['click']}>
                                             <Space style={{ cursor: "pointer" }}>
-                                                <span>Welcome {user?.name}</span>
+                                                <span>Xin chào {user?.name}</span>
                                                 {/* <Avatar> {user?.name?.substring(0, 2)?.toUpperCase()} </Avatar> */}
                                                 <Avatar style={{ backgroundColor: '#fde3cf', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                                                     <UserOutlined style={{ fontSize: 50, paddingLeft: 12, color: '#3399FF' }} />
@@ -162,7 +162,7 @@ const Header = (props: any) => {
                         </div>
                         :
                         <div className={styles['header-mobile']}>
-                            <span>Your APP</span>
+                            <span>Ứng dụng của bạn</span>
                             <MenuFoldOutlined onClick={() => setOpenMobileMenu(true)} />
                         </div>
                     }
