@@ -1,12 +1,12 @@
 import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IJob } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
-import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
+import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined } from "@ant-design/icons";
+import { ActionType, ProColumns, ProFormSelect, ProFormText } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteJob } from "@/config/api";
+import { callDeleteJob, callRestoreJob } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
 import { fetchJob } from "@/redux/slice/jobSlide";
@@ -26,15 +26,44 @@ const JobRecruiterPage = () => {
         if (!id) return;
         try {
             const res = await callDeleteJob(id);
-            message.success("Xóa Job thành công");
-            reloadTable();
+            if (res?.statusCode === 200) {
+                message.success("Xóa công việc thành công");
+                reloadTable();
+            } else {
+                notification.error({
+                    message: "Có lỗi xảy ra",
+                    description: res?.message || "Xóa công việc thất bại"
+                });
+            }
         } catch (error: any) {
             notification.error({
                 message: "Có lỗi xảy ra",
-                description: error?.response?.data?.message || "Xóa job thất bại"
+                description: error?.response?.data?.message || "Xóa công việc thất bại"
             });
         }
     };
+
+    const handleRestoreJob = async (id: string | undefined) => {
+        if (!id) return;
+        try {
+            const res = await callRestoreJob(id);
+            if (res?.statusCode === 200) {
+                message.success("Khôi phục công việc thành công");
+                reloadTable();
+            } else {
+                notification.error({
+                    message: "Có lỗi xảy ra",
+                    description: res?.message || "Khôi phục công việc thất bại"
+                });
+            }
+        } catch (error: any) {
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description: error?.response?.data?.message || "Khôi phục công việc thất bại"
+            });
+        }
+    };
+
     const reloadTable = () => {
         tableRef?.current?.reload();
     }
@@ -90,7 +119,11 @@ const JobRecruiterPage = () => {
             render: (_, __, index) => (index + 1 + (meta.page - 1) * meta.pageSize),
             hideInSearch: true,
         },
-        { title: 'Tên Job', dataIndex: 'name', sorter: true },
+        {
+            title: 'Công việc',
+            dataIndex: 'name',
+            sorter: true
+        },
         {
             title: 'Mức lương',
             dataIndex: 'salary',
@@ -98,7 +131,7 @@ const JobRecruiterPage = () => {
             render: (_, entity) => `${entity.salary?.toLocaleString()} đ`,
         },
         {
-            title: 'Level',
+            title: 'Trình độ',
             dataIndex: 'level',
             renderFormItem: () => (
                 <ProFormSelect
@@ -112,7 +145,7 @@ const JobRecruiterPage = () => {
                         MIDDLE: 'MIDDLE',
                         SENIOR: 'SENIOR',
                     }}
-                    placeholder="Chọn level"
+                    placeholder="Chọn trình độ"
                 />
             ),
         },
@@ -127,7 +160,7 @@ const JobRecruiterPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -139,7 +172,7 @@ const JobRecruiterPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -151,26 +184,44 @@ const JobRecruiterPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_, entity) => (
                 <Space>
-                    <EditOutlined
-                        style={{ fontSize: 20, color: '#ffa500' }}
-                        onClick={() => navigate(`upsert?id=${entity.id}`)}
-                    />
-                    <Popconfirm
-                        placement="leftTop"
-                        title="Xác nhận xóa job"
-                        onConfirm={() => handleDeleteJob(entity.id)}
-                        okText="Xác nhận"
-                        cancelText="Hủy"
-                    >
-                        <DeleteOutlined
-                            style={{ fontSize: 20, color: '#ff4d4f', cursor: 'pointer' }}
-                        />
-                    </Popconfirm>
+                    {entity.active ? (
+                        <>
+                            <EditOutlined
+                                style={{ fontSize: 20, color: '#ffa500' }}
+                                onClick={() => navigate(`upsert?id=${entity.id}`)}
+                            />
+                            <Popconfirm
+                                placement="leftTop"
+                                title="Xác nhận xóa công việc"
+                                description="Bạn có chắc chắn muốn xóa công việc này?"
+                                onConfirm={() => handleDeleteJob(entity.id)}
+                                okText="Xác nhận"
+                                cancelText="Hủy"
+                            >
+                                <DeleteOutlined
+                                    style={{ fontSize: 20, color: '#ff4d4f', cursor: 'pointer' }}
+                                />
+                            </Popconfirm>
+                        </>
+                    ) : (
+                        <Popconfirm
+                            placement="leftTop"
+                            title="Xác nhận khôi phục công việc"
+                            description="Bạn có chắc chắn muốn khôi phục công việc này?"
+                            onConfirm={() => handleRestoreJob(entity.id)}
+                            okText="Xác nhận"
+                            cancelText="Hủy"
+                        >
+                            <UndoOutlined
+                                style={{ fontSize: 20, color: '#1890ff', cursor: 'pointer' }}
+                            />
+                        </Popconfirm>
+                    )}
                 </Space>
             )
         },
@@ -180,7 +231,7 @@ const JobRecruiterPage = () => {
         <div>
             <DataTable<IJob>
                 actionRef={tableRef}
-                headerTitle="Jobs của công ty bạn"
+                headerTitle="Danh sách công việc của công ty"
                 rowKey="id"
                 loading={isFetching}
                 columns={columns}

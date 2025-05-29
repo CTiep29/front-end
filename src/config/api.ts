@@ -74,12 +74,12 @@ export const callUploadSingleFile = (file: any, folderType: string) => {
  * 
 Module Company
  */
-export const callCreateCompany = (name: string, address: string, description: string, logo: string) => {
-    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address, description, logo })
+export const callCreateCompany = (name: string, address: string, description: string, logo: string, taxCode: string, url: string) => {
+    return axios.post<IBackendRes<ICompany>>('/api/v1/companies', { name, address, description, logo, taxCode, url })
 }
 
-export const callUpdateCompany = (id: string, name: string, address: string, description: string, logo: string) => {
-    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address, description, logo })
+export const callUpdateCompany = (id: string, name: string, address: string, description: string, logo: string, taxCode: string, url: string) => {
+    return axios.put<IBackendRes<ICompany>>(`/api/v1/companies`, { id, name, address, description, logo, taxCode, url })
 }
 
 export const callDeleteCompany = (id: string) => {
@@ -162,8 +162,12 @@ export const callUpdateJob = (job: IJob, id: string) => {
     return axios.put<IBackendRes<IJob>>(`/api/v1/jobs`, { id, ...job })
 }
 
-export const callDeleteJob = (id: string) => {
-    return axios.delete<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
+export const callDeleteJob = async (id: string) => {
+    return await axios.delete<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
+}
+
+export const callRestoreJob = async (id: string) => {
+    return await axios.put<IBackendRes<IJob>>(`/api/v1/jobs/${id}/restore`);
 }
 
 export const callFetchJob = (query: string) => {
@@ -201,6 +205,10 @@ export const callUpdateResumeStatus = (id: any, status: string) => {
 
 export const callDeleteResume = (id: string) => {
     return axios.delete<IBackendRes<IResume>>(`/api/v1/resumes/${id}`);
+}
+
+export const callRestoreResume = (id: string) => {
+    return axios.put<IBackendRes<IResume>>(`/api/v1/resumes/${id}/restore`);
 }
 
 export const callFetchResume = (query: string) => {

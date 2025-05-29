@@ -74,7 +74,7 @@ const PermissionPage = () => {
             sorter: true,
         },
         {
-            title: 'Phương thức',
+            title: 'Cách thức',
             dataIndex: 'method',
             sorter: true,
             render(dom, entity, index, action, schema) {

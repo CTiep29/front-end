@@ -111,7 +111,18 @@ instance.interceptors.response.use(
                 window.location.href = '/login';
             }
         }
-
+        // Xử lý lỗi 400 khi đăng nhập
+        if (
+            error.config && error.response
+            && +error.response.status === 400
+            && error.config.url === '/api/v1/auth/login'
+        ) {
+            notification.error({
+                message: "Lỗi đăng nhập",
+                description: "Email / Mật khâủ không hợp lệ",
+                duration: 5
+            });
+        }
         // Xử lý lỗi 403 - Forbidden
         if (error.response?.status === 403) {
             notification.error({

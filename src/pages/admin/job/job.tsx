@@ -1,12 +1,12 @@
 import DataTable from "@/components/client/data-table";
 import { useAppDispatch, useAppSelector } from "@/redux/hooks";
 import { IJob } from "@/types/backend";
-import { DeleteOutlined, EditOutlined, PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined, EditOutlined, PlusOutlined, UndoOutlined } from "@ant-design/icons";
 import { ActionType, ProColumns, ProFormSelect } from '@ant-design/pro-components';
 import { Button, Popconfirm, Space, Tag, message, notification } from "antd";
 import { useRef } from 'react';
 import dayjs from 'dayjs';
-import { callDeleteJob } from "@/config/api";
+import { callDeleteJob, callRestoreJob } from "@/config/api";
 import queryString from 'query-string';
 import { useNavigate } from "react-router-dom";
 import { fetchJob } from "@/redux/slice/jobSlide";
@@ -27,15 +27,37 @@ const JobPage = () => {
         if (!id) return;
         try {
             const res = await callDeleteJob(id);
-            message.success("Xóa Job thành công");
+            message.success("Xóa công việc thành công");
             reloadTable();
         } catch (error: any) {
             notification.error({
                 message: "Có lỗi xảy ra",
-                description: error?.response?.data?.message || "Xóa job thất bại"
+                description: error?.response?.data?.message || "Xóa công việc thất bại"
             });
         }
     };
+
+    const handleRestoreJob = async (id: string | undefined) => {
+        if (!id) return;
+        try {
+            const res = await callRestoreJob(id);
+            if (res?.statusCode === 200) {
+                message.success("Khôi phục công việc thành công");
+                reloadTable();
+            } else {
+                notification.error({
+                    message: "Có lỗi xảy ra",
+                    description: res?.message || "Khôi phục công việc thất bại"
+                });
+            }
+        } catch (error: any) {
+            notification.error({
+                message: "Có lỗi xảy ra",
+                description: error?.response?.data?.message || "Khôi phục công việc thất bại"
+            });
+        }
+    };
+
     const reloadTable = () => {
         tableRef?.current?.reload();
     }
@@ -55,7 +77,7 @@ const JobPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Tên công việc',
+            title: 'Công việc',
             dataIndex: 'name',
             sorter: true,
         },
@@ -141,38 +163,55 @@ const JobPage = () => {
                         permission={ALL_PERMISSIONS.JOBS.UPDATE}
                         hideChildren
                     >
-                        <EditOutlined
-                            style={{
-                                fontSize: 20,
-                                color: '#ffa500',
-                            }}
-                            type=""
-                            onClick={() => {
-                                navigate(`/admin/job/upsert?id=${entity.id}`)
-                            }}
-                        />
+                        {entity.active ? (
+                            <EditOutlined
+                                style={{
+                                    fontSize: 20,
+                                    color: '#ffa500',
+                                }}
+                                type=""
+                                onClick={() => {
+                                    navigate(`/admin/job/upsert?id=${entity.id}`)
+                                }}
+                            />
+                        ) : null}
                     </Access >
                     <Access
                         permission={ALL_PERMISSIONS.JOBS.DELETE}
                         hideChildren
                     >
-                        <Popconfirm
-                            placement="leftTop"
-                            title={"Xác nhận xóa job"}
-                            description={"Bạn có chắc chắn muốn xóa job này ?"}
-                            onConfirm={() => handleDeleteJob(entity.id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
-                        >
-                            <span style={{ cursor: "pointer", margin: "0 10px" }}>
-                                <DeleteOutlined
-                                    style={{
-                                        fontSize: 20,
-                                        color: '#ff4d4f',
-                                    }}
+                        {entity.active ? (
+                            <Popconfirm
+                                placement="leftTop"
+                                title={"Xác nhận xóa job"}
+                                description={"Bạn có chắc chắn muốn xóa công việc này ?"}
+                                onConfirm={() => handleDeleteJob(entity.id)}
+                                okText="Xác nhận"
+                                cancelText="Hủy"
+                            >
+                                <span style={{ cursor: "pointer", margin: "0 10px" }}>
+                                    <DeleteOutlined
+                                        style={{
+                                            fontSize: 20,
+                                            color: '#ff4d4f',
+                                        }}
+                                    />
+                                </span>
+                            </Popconfirm>
+                        ) : (
+                            <Popconfirm
+                                placement="leftTop"
+                                title="Xác nhận khôi phục công việc"
+                                description="Bạn có chắc chắn muốn khôi phục công việc này?"
+                                onConfirm={() => handleRestoreJob(entity.id)}
+                                okText="Xác nhận"
+                                cancelText="Hủy"
+                            >
+                                <UndoOutlined
+                                    style={{ fontSize: 20, color: '#1890ff', cursor: 'pointer' }}
                                 />
-                            </span>
-                        </Popconfirm>
+                            </Popconfirm>
+                        )}
                     </Access>
                 </Space >
             ),

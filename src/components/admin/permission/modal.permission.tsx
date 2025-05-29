@@ -76,7 +76,7 @@ const ModalPermission = (props: IProps) => {
     return (
         <>
             <ModalForm
-                title={<>{dataInit?.id ? "Cập nhật Permission" : "Tạo mới Permission"}</>}
+                title={<>{dataInit?.id ? "Cập nhật quyền hạn" : "Tạo mới quyền hạn"}</>}
                 open={openModal}
                 modalProps={{
                     onCancel: () => { handleReset() },

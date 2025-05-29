@@ -57,6 +57,8 @@ export interface ICompany {
     createdAt?: string;
     updatedAt?: string;
     active?: boolean;
+    taxCode?: string;
+    url?: string;
 }
 
 export interface ISkill {
@@ -127,6 +129,7 @@ export interface IResume {
     userId: string;
     url: string;
     status: string;
+    active?: boolean;
     companyId: string | {
         id: string;
         name: string;

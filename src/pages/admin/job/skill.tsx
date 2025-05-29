@@ -28,7 +28,7 @@ const SkillPage = () => {
         if (id) {
             const res = await callDeleteSkill(id);
             if (res && +res.statusCode === 200) {
-                message.success('Xóa Skill thành công');
+                message.success('Xóa kỹ năng thành công');
                 reloadTable();
             } else {
                 notification.error({
@@ -58,26 +58,26 @@ const SkillPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'Name',
+            title: 'Tên',
             dataIndex: 'name',
             sorter: true,
         },
 
         {
-            title: 'Created By',
+            title: 'Người tạo',
             dataIndex: 'createdBy',
             hideInSearch: true,
         },
 
         {
-            title: 'Updated By',
+            title: 'Người cập nhật',
             dataIndex: 'updatedBy',
             hideInSearch: true,
         },
 
 
         {
-            title: 'CreatedAt',
+            title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
             sorter: true,
@@ -89,7 +89,7 @@ const SkillPage = () => {
             hideInSearch: true,
         },
         {
-            title: 'UpdatedAt',
+            title: 'Ngày cập nhật',
             dataIndex: 'updatedAt',
             width: 200,
             sorter: true,
@@ -102,7 +102,7 @@ const SkillPage = () => {
         },
         {
 
-            title: 'Actions',
+            title: 'Hành động',
             hideInSearch: true,
             width: 50,
             render: (_value, entity, _index, _action) => (
@@ -122,8 +122,8 @@ const SkillPage = () => {
 
                     <Popconfirm
                         placement="leftTop"
-                        title={"Xác nhận xóa skill"}
-                        description={"Bạn có chắc chắn muốn xóa skill này ?"}
+                        title={"Xác nhận xóa kỹ năng"}
+                        description={"Bạn có chắc chắn muốn xóa kỹ năng này ?"}
                         onConfirm={() => handleDeleteSkill(entity.id)}
                         okText="Xác nhận"
                         cancelText="Hủy"
@@ -182,7 +182,7 @@ const SkillPage = () => {
         <div>
             <DataTable<ISkill>
                 actionRef={tableRef}
-                headerTitle="Danh sách Skill"
+                headerTitle="Danh sách kỹ năng"
                 rowKey="id"
                 loading={isFetching}
                 columns={columns}

@@ -71,58 +71,179 @@ const ViewDetailResume = (props: IProps) => {
                 maskClosable={false}
                 destroyOnClose
                 extra={
-
                     <Button loading={isSubmit} type="primary" onClick={handleChangeStatus}>
                         Cập nhật
                     </Button>
-
                 }
             >
-                <Descriptions title="" bordered column={2} layout="vertical">
-                    <Descriptions.Item label="Email">{dataInit?.email}</Descriptions.Item>
-                    <Descriptions.Item label="CV">
-                        {dataInit?.url ? (
-                            <a href={dataInit.url} target="_blank" rel="noopener noreferrer">
-                                Xem CV
-                            </a>
-                        ) : (
-                            "Không có CV"
-                        )}
-                    </Descriptions.Item>
-
-                    <Descriptions.Item label="Trạng thái">
-                        <Form
-                            form={form}
+                <div style={{ padding: '0 16px' }}>
+                    <Descriptions 
+                        title="" 
+                        bordered 
+                        column={1} 
+                        layout="vertical"
+                        size="small"
+                        style={{ 
+                            marginBottom: '20px',
+                            borderRadius: '8px',
+                            overflow: 'hidden'
+                        }}
+                    >
+                        <Descriptions.Item 
+                            label="Thông tin ứng viên" 
+                            labelStyle={{ 
+                                fontWeight: 'bold', 
+                                fontSize: '16px',
+                                color: '#1890ff',
+                                backgroundColor: '#f0f5ff',
+                                padding: '12px 16px',
+                                margin: 0
+                            }}
                         >
-                            <Form.Item name={"status"}>
-                                <Select
-                                    // placeholder="Select a option and change input text above"
-                                    // onChange={onGenderChange}
-                                    // allowClear
-                                    style={{ width: "100%" }}
-                                    defaultValue={dataInit?.status}
-                                >
-                                    <Option value="PENDING">PENDING</Option>
-                                    <Option value="REVIEWING">REVIEWING</Option>
-                                    <Option value="APPROVED">APPROVED</Option>
-                                    <Option value="REJECTED">REJECTED</Option>
-                                    <Option value="HIRED">HIRED</Option>
-                                </Select>
-                            </Form.Item>
-                        </Form>
+                            <div style={{ padding: '16px' }}>
+                                <div style={{ 
+                                    marginBottom: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '80px'
+                                    }}>Email:</span>
+                                    <span style={{ color: '#262626' }}>{dataInit?.email}</span>
+                                </div>
+                                <div style={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '80px'
+                                    }}>CV:</span>
+                                    {dataInit?.url ? (
+                                        <a href={dataInit.url} target="_blank" rel="noopener noreferrer" style={{ color: '#1890ff' }}>
+                                            Xem CV
+                                        </a>
+                                    ) : (
+                                        <span style={{ color: '#999' }}>Không có CV</span>
+                                    )}
+                                </div>
+                            </div>
+                        </Descriptions.Item>
 
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Tên công việc">
-                        {dataInit?.job?.name}
+                        <Descriptions.Item 
+                            label="Thông tin công việc" 
+                            labelStyle={{ 
+                                fontWeight: 'bold', 
+                                fontSize: '16px',
+                                color: '#1890ff',
+                                backgroundColor: '#f0f5ff',
+                                padding: '12px 16px',
+                                margin: 0
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <div style={{ 
+                                    marginBottom: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '120px'
+                                    }}>Tên công việc:</span>
+                                    <span style={{ color: '#262626' }}>{dataInit?.job?.name}</span>
+                                </div>
+                                <div style={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '120px'
+                                    }}>Tên công ty:</span>
+                                    <span style={{ color: '#262626' }}>{dataInit?.companyName}</span>
+                                </div>
+                            </div>
+                        </Descriptions.Item>
 
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Tên Công Ty">
-                        {dataInit?.companyName}
-                    </Descriptions.Item>
-                    <Descriptions.Item label="Ngày tạo">{dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
-                    <Descriptions.Item label="Ngày sửa">{dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}</Descriptions.Item>
+                        <Descriptions.Item 
+                            label="Trạng thái hồ sơ" 
+                            labelStyle={{ 
+                                fontWeight: 'bold', 
+                                fontSize: '16px',
+                                color: '#1890ff',
+                                backgroundColor: '#f0f5ff',
+                                padding: '12px 16px',
+                                margin: 0
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <Form form={form} style={{ margin: 0 }}>
+                                    <Form.Item name={"status"} style={{ margin: 0 }}>
+                                        <Select
+                                            style={{ width: "100%" }}
+                                            defaultValue={dataInit?.status}
+                                        >
+                                            <Option value="PENDING">Chờ duyệt</Option>
+                                            <Option value="REVIEWING">Đang xem xét</Option>
+                                            <Option value="APPROVED">Đã duyệt</Option>
+                                            <Option value="REJECTED">Từ chối</Option>
+                                            <Option value="INTERVIEW_CONFIRMED" disabled>Xác nhận phỏng vấn</Option>
+                                            <Option value="HIRED">Đã tuyển</Option>
+                                        </Select>
+                                    </Form.Item>
+                                </Form>
+                            </div>
+                        </Descriptions.Item>
 
-                </Descriptions>
+                        <Descriptions.Item 
+                            label="Thông tin thời gian" 
+                            labelStyle={{ 
+                                fontWeight: 'bold', 
+                                fontSize: '16px',
+                                color: '#1890ff',
+                                backgroundColor: '#f0f5ff',
+                                padding: '12px 16px',
+                                margin: 0
+                            }}
+                        >
+                            <div style={{ padding: '16px' }}>
+                                <div style={{ 
+                                    marginBottom: '12px',
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '100px'
+                                    }}>Ngày tạo:</span>
+                                    <span style={{ color: '#262626' }}>
+                                        {dataInit && dataInit.createdAt ? dayjs(dataInit.createdAt).format('DD-MM-YYYY HH:mm:ss') : ""}
+                                    </span>
+                                </div>
+                                <div style={{ 
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '8px'
+                                }}>
+                                    <span style={{ 
+                                        color: '#666',
+                                        minWidth: '100px'
+                                    }}>Ngày sửa:</span>
+                                    <span style={{ color: '#262626' }}>
+                                        {dataInit && dataInit.updatedAt ? dayjs(dataInit.updatedAt).format('DD-MM-YYYY HH:mm:ss') : ""}
+                                    </span>
+                                </div>
+                            </div>
+                        </Descriptions.Item>
+                    </Descriptions>
+                </div>
             </Drawer>
         </>
     )

@@ -463,6 +463,40 @@
             width: 200px;
             margin: 20px auto;
         }
+        .title{
+            font-size: 28px;
+            font-weight: 700;
+            color: #1a365d;
+            margin: 0;
+            position: relative;
+            padding-left: 15px;
+
+            &::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 4px;
+                height: 24px;
+                background: #3182ce;
+                border-radius: 2px;
+            }
+        }
+        .viewAllLink{
+            color: #3182ce;
+            font-weight: 500;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            background: #ebf8ff;
+
+            &:hover {
+                background: #3182ce;
+                color: white;
+            }
+        }
     }
 
 }
@@ -491,7 +525,7 @@
 
     .title {
         font-size: 27px;
-        font-family: "Roboto", sans-serif;
+        font-family: 'Inter', sans-serif;
         color: #353535;
         line-height: 35px;
         margin-top: 20px;
@@ -583,20 +617,70 @@
     }
 
     .company {
-        text-align: center;
-        margin-top: 30px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+        padding: 24px;
+        margin-bottom: 20px;
+        border: 1px solid #e6f0ff;
 
-        img {
-            width: 160px;
-            height: 160px;
-            object-fit: contain;
-            margin-bottom: 10px;
+        .company-header {
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e6f0ff;
+            padding-bottom: 12px;
+
+            h3 {
+                margin: 0;
+                color: #000000;
+                font-size: 20px;
+                font-weight: 600;
+                text-align: center;
+            }
         }
 
-        div {
-            font-size: 20px;
-            font-weight: 600;
-            color: #333;
+        .company-content {
+            .company-logo {
+                margin-bottom: 20px;
+                text-align: center;
+                padding: 20px;
+                background: #f8faff;
+                border-radius: 12px;
+                border: 1px solid #e6f0ff;
+                
+                img {
+                    max-width: 180px;
+                    height: 180px;
+                    border-radius: 8px;
+                    object-fit: contain;
+                    padding: 10px;
+                    background: white;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+                }
+            }
+
+            .company-info {
+                text-align: center;
+                padding: 0 10px;
+
+                .company-name {
+                    margin: 0;
+                    color: #1677ff;
+                    font-size: 20px;
+                    font-weight: 600;
+                    padding: 12px;
+                    background: #f8faff;
+                    border-radius: 8px;
+                    border: 1px solid #e6f0ff;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        background: #e6f0ff;
+                        color: #0958d9;
+                        transform: translateY(-1px);
+                        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                    }
+                }
+            }
         }
     }
 
@@ -622,6 +706,7 @@
 
             &:hover {
                 box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+                border: 1px solid #3182ce;
             }
 
             .job-start-date {
@@ -691,6 +776,49 @@
     h6 {
         font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         font-weight: 600;
+    }
+
+    // Update specific font styles
+    .title {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+    }
+
+    .job-title {
+        font-family: 'Inter', sans-serif;
+        font-weight: 800;
+    }
+
+    .company-name {
+        font-family: 'Inter', sans-serif;
+        font-weight: 500;
+    }
+
+    .searchTitle {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+    }
+
+    // Add more specific font styles
+    .ant-menu-item {
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    .ant-select-selection-placeholder,
+    .ant-select-selection-item {
+        font-family: 'Inter', sans-serif !important;
+    }
+
+    .ant-pagination-item a {
+        font-family: 'Inter', sans-serif;
+    }
+
+    .job-location span,
+    .job-salary span,
+    .job-tags .tag,
+    .job-updatedAt,
+    .job-type {
+        font-family: 'Inter', sans-serif;
     }
 }
 

@@ -29,14 +29,21 @@ const UserPage = () => {
 
     const handleDeleteUser = async (id: string | undefined) => {
         if (id) {
-            const res = await callDeleteUser(id);
-            if (+res.statusCode === 200) {
-                message.success('Xóa mềm Tài khoản thành công');
-                reloadTable();
-            } else {
+            try {
+                const res = await callDeleteUser(id);
+                if (res?.statusCode === 200) {
+                    message.success('Xóa mềm Tài khoản thành công');
+                    reloadTable();
+                } else {
+                    notification.error({
+                        message: 'Có lỗi xảy ra',
+                        description: res?.message || 'Không thể xóa tài khoản'
+                    });
+                }
+            } catch (error: any) {
                 notification.error({
                     message: 'Có lỗi xảy ra',
-                    description: res.message
+                    description: error?.response?.data?.message || 'Không thể xóa tài khoản'
                 });
             }
         }

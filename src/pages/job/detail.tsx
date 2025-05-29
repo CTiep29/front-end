@@ -12,12 +12,38 @@ import relativeTime from 'dayjs/plugin/relativeTime';
 import ApplyModal from "@/components/client/modal/apply.modal";
 dayjs.extend(relativeTime)
 
+// Hàm helper để chuyển đổi thời gian sang tiếng Việt
+const getTimeAgo = (date: string | Date) => {
+    const now = dayjs();
+    const past = dayjs(date);
+    const diff = now.diff(past, 'second');
+
+    if (diff < 60) {
+        return 'vài giây trước';
+    } else if (diff < 3600) {
+        const minutes = Math.floor(diff / 60);
+        return `${minutes} phút trước`;
+    } else if (diff < 86400) {
+        const hours = Math.floor(diff / 3600);
+        return `${hours} giờ trước`;
+    } else if (diff < 2592000) {
+        const days = Math.floor(diff / 86400);
+        return `${days} ngày trước`;
+    } else if (diff < 31536000) {
+        const months = Math.floor(diff / 2592000);
+        return `${months} tháng trước`;
+    } else {
+        const years = Math.floor(diff / 31536000);
+        return `${years} năm trước`;
+    }
+};
 
 const ClientJobDetailPage = (props: any) => {
     const [jobDetail, setJobDetail] = useState<IJob | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const navigate = useNavigate();
 
     let location = useLocation();
     let params = new URLSearchParams(location.search);
@@ -36,6 +62,12 @@ const ClientJobDetailPage = (props: any) => {
         }
         init();
     }, [id]);
+
+    const handleCompanyClick = (companyId: string | undefined) => {
+        if (companyId) {
+            navigate(`/company/detail?id=${companyId}`);
+        }
+    };
 
     return (
         <div className={`${styles["container"]} ${styles["detail-job-section"]}`}>
@@ -57,7 +89,8 @@ const ClientJobDetailPage = (props: any) => {
                                 </div>
                                 <Divider />
                                 <div className={styles["skills"]}>
-                                    {jobDetail?.skills?.map((item, index) => {
+                                    <span style={{ marginRight: '10px', fontSize: '16px'}}>Kỹ năng:</span>
+                                    {jobDetail?.skills?.map((item: any, index) => {
                                         return (
                                             <Tag key={`${index}-key`} color="gold" >
                                                 {item.name}
@@ -73,7 +106,7 @@ const ClientJobDetailPage = (props: any) => {
                                     <EnvironmentOutlined style={{ color: '#58aaab' }} />&nbsp;{jobDetail.location}
                                 </div>
                                 <div className={styles["startDate"]}>
-                                    <HistoryOutlined /> {jobDetail.startDate ? dayjs(jobDetail.startDate).locale("en").fromNow() : dayjs(jobDetail.startDate).locale("en").fromNow()}
+                                    <HistoryOutlined /> {jobDetail.startDate ? getTimeAgo(jobDetail.startDate) : getTimeAgo(jobDetail.startDate)}
                                 </div>
                                 <div className={styles["endDate"]}>
                                     <HourglassOutlined /> Hạn nộp hồ sơ đến: {jobDetail.endDate ? dayjs(jobDetail.endDate).format('DD/MM/YYYY') : "Không có"}
@@ -84,15 +117,26 @@ const ClientJobDetailPage = (props: any) => {
 
                             <Col span={24} md={8}>
                                 <div className={styles["company"]}>
-                                    <div>
-                                        <img
-                                            width={"200px"}
-                                            alt="example"
-                                            src={jobDetail.company?.logo?.startsWith("http") ? jobDetail.company?.logo : `${import.meta.env.VITE_BACKEND_URL}/storage/company/${jobDetail.company?.logo}`}
-                                        />
+                                    <div className={styles["company-header"]}>
+                                        <h3>Công ty</h3>
                                     </div>
-                                    <div>
-                                        {jobDetail.company?.name}
+                                    <div className={styles["company-content"]}>
+                                        <div className={styles["company-logo"]}>
+                                            <img
+                                                width={"100%"}
+                                                alt={jobDetail.company?.name}
+                                                src={jobDetail.company?.logo?.startsWith("http") ? jobDetail.company?.logo : `${import.meta.env.VITE_BACKEND_URL}/storage/company/${jobDetail.company?.logo}`}
+                                            />
+                                        </div>
+                                        <div className={styles["company-info"]}>
+                                            <h4 
+                                                className={styles["company-name"]}
+                                                onClick={() => handleCompanyClick(jobDetail.company?.id)}
+                                                style={{ cursor: 'pointer' }}
+                                            >
+                                                {jobDetail.company?.name}
+                                            </h4>
+                                        </div>
                                     </div>
                                 </div>
                             </Col>

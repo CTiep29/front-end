@@ -22,6 +22,8 @@ interface IProps {
 interface ICompanyForm {
     name: string;
     address: string;
+    taxCode: string;
+    url: string;
 }
 
 interface ICompanyLogo {
@@ -50,6 +52,8 @@ const ModalCompany = (props: IProps) => {
             form.setFieldsValue({
                 name: dataInit.name,
                 address: dataInit.address,
+                taxCode: dataInit.taxCode,
+                url: dataInit.url,
             })
             setDataLogo([{
                 name: dataInit.logo,
@@ -60,7 +64,7 @@ const ModalCompany = (props: IProps) => {
     }, [dataInit])
 
     const submitCompany = async (valuesForm: ICompanyForm) => {
-        const { name, address } = valuesForm;
+        const { name, address, taxCode, url } = valuesForm;
 
         if (dataLogo.length === 0) {
             message.error('Vui lòng upload ảnh Logo')
@@ -69,9 +73,9 @@ const ModalCompany = (props: IProps) => {
 
         if (dataInit?.id) {
             //update
-            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name);
+            const res = await callUpdateCompany(dataInit.id, name, address, value, dataLogo[0].name, taxCode, url);
             if (res.data) {
-                message.success("Cập nhật company thành công");
+                message.success("Cập nhật công ty thành công");
                 handleReset();
                 reloadTable();
             } else {
@@ -82,9 +86,9 @@ const ModalCompany = (props: IProps) => {
             }
         } else {
             //create
-            const res = await callCreateCompany(name, address, value, dataLogo[0].name);
+            const res = await callCreateCompany(name, address, value, dataLogo[0].name, taxCode, url);
             if (res.data) {
-                message.success("Thêm mới company thành công");
+                message.success("Thêm mới công ty thành công");
                 handleReset();
                 reloadTable();
             } else {
@@ -172,7 +176,7 @@ const ModalCompany = (props: IProps) => {
             {openModal &&
                 <>
                     <ModalForm
-                        title={<>{dataInit?.id ? "Cập nhật Company" : "Tạo mới Company"}</>}
+                        title={<>{dataInit?.id ? "Cập nhật Công ty" : "Tạo mới Công ty"}</>}
                         open={openModal}
                         modalProps={{
                             onCancel: () => { handleReset() },
@@ -210,6 +214,7 @@ const ModalCompany = (props: IProps) => {
                                     placeholder="Nhập tên công ty"
                                 />
                             </Col>
+
                             <Col span={8}>
                                 <Form.Item
                                     labelCol={{ span: 24 }}
@@ -270,7 +275,23 @@ const ModalCompany = (props: IProps) => {
                                     }}
                                 />
                             </Col>
-
+                            <Col span={24}>
+                                <ProFormText
+                                    label="Mã số thuế"
+                                    name="taxCode"
+                                    placeholder="Nhập mã số thuế công ty"
+                                />
+                            </Col>
+                            <Col span={24}>
+                                <ProFormTextArea
+                                    label="URL Google Maps"
+                                    name="url"
+                                    placeholder="Nhập đường dẫn iframe Google Maps"
+                                    fieldProps={{
+                                        autoSize: { minRows: 2, maxRows: 4 }
+                                    }}
+                                />
+                            </Col>
                             <ProCard
                                 title="Miêu tả"
                                 // subTitle="mô tả công ty"

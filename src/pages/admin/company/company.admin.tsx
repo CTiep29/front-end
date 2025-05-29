@@ -158,7 +158,7 @@ const CompanyPage = () => {
                                 <Popconfirm
                                     placement="leftTop"
                                     title={"Xác nhận xóa company"}
-                                    description={"Bạn có chắc chắn muốn xóa company này ?"}
+                                    description={"Bạn có chắc chắn muốn xóa công ty này ?"}
                                     onConfirm={() => handleDeleteCompany(entity.id)}
                                     okText="Xác nhận"
                                     cancelText="Hủy"

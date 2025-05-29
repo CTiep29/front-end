@@ -8,10 +8,10 @@ import {
     MenuFoldOutlined,
     MenuUnfoldOutlined,
     AliwangwangOutlined,
-    BugOutlined,
     ScheduleOutlined,
     HomeOutlined,
     LogoutOutlined,
+    RadarChartOutlined,
 } from '@ant-design/icons';
 import { Layout, Menu, Dropdown, Space, message, Avatar, Button } from 'antd';
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
@@ -22,6 +22,7 @@ import { isMobile } from 'react-device-detect';
 import type { MenuProps } from 'antd';
 import { setLogoutAction } from '@/redux/slice/accountSlide';
 import { ALL_PERMISSIONS } from '@/config/permissions';
+import styles from '@/styles/admin.module.scss';
 
 const { Content, Sider } = Layout;
 
@@ -128,6 +129,9 @@ const LayoutAdmin = () => {
             dispatch(setLogoutAction({}));
             message.success('Đăng xuất thành công');
             navigate('/')
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
         }
     }
 
@@ -162,7 +166,7 @@ const LayoutAdmin = () => {
         <>
             <Layout
                 style={{ minHeight: '100vh' }}
-                className="layout-admin"
+                className={`layout-admin ${styles['admin-layout']}`}
             >
                 {!isMobile ?
                     <Sider
@@ -170,8 +174,33 @@ const LayoutAdmin = () => {
                         collapsible
                         collapsed={collapsed}
                         onCollapse={(value) => setCollapsed(value)}>
-                        <div style={{ height: 32, margin: 16, textAlign: 'center' }}>
-                            <BugOutlined />  Trang quản trị
+                        <div style={{ 
+                            height: 64, 
+                            margin: '16px 8px',
+                            padding: '0 16px',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            background: 'linear-gradient(45deg,rgb(94, 154, 211),rgb(84, 144, 209))',
+                            borderRadius: '8px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.15)'
+                        }}>
+                            {collapsed ? (
+                                <RadarChartOutlined style={{ 
+                                    fontSize: '24px',
+                                    color: '#fff'
+                                }} />
+                            ) : (
+                                <span style={{ 
+                                    color: '#fff',
+                                    fontSize: '18px',
+                                    fontWeight: '600',
+                                    whiteSpace: 'nowrap',
+                                    transition: 'opacity 0.2s'
+                                }}>
+                                    Trang quản trị
+                                </span>
+                            )}
                         </div>
                         <Menu
                             selectedKeys={[activeMenu]}

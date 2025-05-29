@@ -1,5 +1,5 @@
-import { Button, Col, Form, Row, Select, notification } from 'antd';
-import { EnvironmentOutlined, MonitorOutlined } from '@ant-design/icons';
+import { Button, Col, Form, Row, Select, notification, Input, Typography } from 'antd';
+import { DownOutlined, EnvironmentOutlined, MonitorOutlined, SearchOutlined, UpOutlined } from '@ant-design/icons';
 import { LOCATION_LIST } from '@/config/utils';
 import { ProForm } from '@ant-design/pro-components';
 import { useEffect, useState } from 'react';
@@ -10,21 +10,28 @@ import styles from '@/styles/client.module.scss';
 const SearchClient = () => {
     const navigate = useNavigate();
     const location = useLocation();
+    const [isExpanded, setIsExpanded] = useState(false);
+    const [searchParams] = useSearchParams();
+    const { Text } = Typography;
 
     const optionsLocations = LOCATION_LIST;
     const [form] = Form.useForm();
     const [optionsSkills, setOptionsSkills] = useState<{ label: string; value: string }[]>([]);
-    const [searchParams] = useSearchParams();
 
     useEffect(() => {
         if (location.search) {
             const queryLocation = searchParams.get("location");
             const querySkills = searchParams.get("skills");
+            const querySearch = searchParams.get("search");
             if (queryLocation) {
                 form.setFieldValue("location", queryLocation);
             }
             if (querySkills) {
                 form.setFieldValue("skills", querySkills.split(","));
+            }
+            if (querySearch) {
+                form.setFieldValue("search", querySearch);
+                setIsExpanded(true);
             }
         }
     }, [location.search]);
@@ -56,7 +63,6 @@ const SearchClient = () => {
         return query.toString();
     };
     const onFinish = async (values: any) => {
-
         const params: Record<string, string | string[]> = {};
 
         if (values?.location?.length) {
@@ -65,8 +71,11 @@ const SearchClient = () => {
         if (values?.skills?.length) {
             params.skills = values.skills;
         }
+        if (values?.search) {
+            params.search = values.search;
+        }
 
-        if (!params["location"] && !params.skills) {
+        if (!params["location"] && !params.skills && !params.search) {
             notification.error({
                 message: 'Có lỗi xảy ra',
                 description: "Vui lòng chọn tiêu chí để tìm kiếm"
@@ -77,6 +86,27 @@ const SearchClient = () => {
         const query = encodeParams(params);
         console.log("Query string gửi đi:", query);
         navigate(`/job?${query}`);
+    };
+
+    const renderSearchInfo = () => {
+        const queryLocation = searchParams.get("location");
+        const querySkills = searchParams.get("skills");
+        const querySearch = searchParams.get("search");
+
+        if (!queryLocation && !querySkills && !querySearch) return null;
+
+        const searchTerms = [];
+        if (querySearch) {
+            searchTerms.push(`"${querySearch}"`);
+        }
+        if (queryLocation) {
+            searchTerms.push(`địa điểm "${queryLocation}"`);
+        }
+        if (querySkills) {
+            const skills = querySkills.split(",");
+            searchTerms.push(`kỹ năng "${skills.join(", ")}"`);
+        }
+
     };
 
     return (
@@ -104,11 +134,15 @@ const SearchClient = () => {
                                 optionLabelProp="label"
                                 options={optionsSkills}
                                 className={styles.searchSelect}
+                                showSearch
+                                filterOption={(input, option) =>
+                                    (option?.label ?? '').toLowerCase().includes(input.toLowerCase())
+                                }
                             />
                         </ProForm.Item>
                     </Col>
 
-                    <Col xs={12} md={4}>
+                    <Col xs={24} md={4}>
                         <ProForm.Item name="location">
                             <Select
                                 allowClear
@@ -122,17 +156,55 @@ const SearchClient = () => {
                         </ProForm.Item>
                     </Col>
 
-                    <Col xs={12} md={4}>
-                        <Button 
-                            type="primary" 
-                            onClick={() => form.submit()} 
-                            block 
-                            size="large"
-                            className={styles.searchButton}
-                        >
-                            Tìm Việc
-                        </Button>
+                    <Col xs={24} md={4}>
+                        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+                            <Button 
+                                type="primary" 
+                                onClick={() => form.submit()} 
+                                block 
+                                size="large"
+                                className={styles.searchButton}
+                            >
+                                Tìm Việc
+                            </Button>
+                            {location.pathname === '/job' && (
+                                <Button 
+                                    type="link" 
+                                    onClick={() => setIsExpanded(!isExpanded)}
+                                    style={{ color: '#1677ff', padding: '0 8px' }}
+                                >
+                                    {isExpanded ? (
+                                        <>
+                                            Thu gọn <UpOutlined style={{ marginLeft: '1px'}} />
+                                        </>
+                                    ) : (
+                                        <>
+                                            Mở rộng <DownOutlined style={{ marginLeft: '1px' }} />
+                                        </>
+                                    )}
+                                </Button>
+                            )}
+                        </div>
                     </Col>
+
+                    {isExpanded && (
+                        <Col span={24}>
+                            <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+                                <ProForm.Item name="search">
+                                    <Input
+                                        placeholder="Tìm kiếm theo tên công việc hoặc tên công ty..."
+                                        size="large"
+                                        style={{ 
+                                            borderRadius: '8px',
+                                            boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+                                        }}
+                                    />
+                                </ProForm.Item>
+                            </div>
+                        </Col>
+                    )}
+
+                    {renderSearchInfo()}
                 </Row>
             </ProForm>
         </div>

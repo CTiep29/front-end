@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { CodeOutlined, ContactsOutlined, FireOutlined, HomeOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, UserOutlined } from '@ant-design/icons';
+import { BankOutlined, CodeOutlined, ContactsOutlined, FireOutlined, HomeOutlined, LogoutOutlined, MenuFoldOutlined, RiseOutlined, UserOutlined } from '@ant-design/icons';
 import { Avatar, Drawer, Dropdown, MenuProps, Space, message } from 'antd';
 import { Menu, ConfigProvider } from 'antd';
 import styles from '@/styles/client.module.scss';
@@ -41,9 +41,9 @@ const Header = (props: any) => {
             icon: <CodeOutlined />,
         },
         {
-            label: <Link to={'/company'}>Top Công ty IT</Link>,
+            label: <Link to={'/company'}>Công ty IT</Link>,
             key: '/company',
-            icon: <RiseOutlined />,
+            icon: <BankOutlined />,
         }
     ];
 
@@ -59,6 +59,9 @@ const Header = (props: any) => {
             dispatch(setLogoutAction({}));
             message.success('Đăng xuất thành công');
             navigate('/')
+            setTimeout(() => {
+                window.location.reload();
+            }, 100);
         }
     }
 
