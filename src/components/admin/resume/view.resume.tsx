@@ -194,6 +194,8 @@ const ViewDetailResume = (props: IProps) => {
                                             <Option value="APPROVED">Đã duyệt</Option>
                                             <Option value="REJECTED">Từ chối</Option>
                                             <Option value="INTERVIEW_CONFIRMED" disabled>Xác nhận phỏng vấn</Option>
+                                            <Option value="INTERVIEW_REJECTED" disabled>Từ chối phỏng vấn</Option>
+                                            <Option value="FAILED">Không đạt yêu cầu</Option>
                                             <Option value="HIRED">Đã tuyển</Option>
                                         </Select>
                                     </Form.Item>

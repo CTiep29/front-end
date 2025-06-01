@@ -182,6 +182,16 @@ export const callFetchJobById = (id: string) => {
     return axios.get<IBackendRes<IJob>>(`/api/v1/jobs/${id}`);
 }
 
+export const callApproveJob = (id: string) => {
+    return axios.put<IBackendRes<IJob>>(`/api/v1/jobs/${id}/approve`);
+}
+
+export const callRejectJob = (id: string) => {
+    return axios.put<IBackendRes<IJob>>(`/api/v1/jobs/${id}/reject`);
+}
+export const callCountPendingJobs = () => {
+    return axios.get<IBackendRes<number>>('/api/v1/jobs/count-pending');
+};
 /**
  * 
 Module Resume

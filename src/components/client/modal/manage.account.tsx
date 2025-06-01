@@ -1,4 +1,4 @@
-import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table, Tabs, message, notification, } from "antd";
+import { Button, Col, Form, Input, Modal, Popconfirm, Row, Select, Table, Tabs, message, notification, Space } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from "antd";
 import { IResume, ISubscribers } from "@/types/backend";
@@ -48,6 +48,23 @@ const UserResume = () => {
         }
     };
 
+    const handleRejectInterview = async (resumeId: number) => {
+        try {
+            const res = await callUpdateResumeStatus(resumeId, "INTERVIEW_REJECTED");
+            if (res?.data) {
+                message.success("Bạn đã từ chối tham gia phỏng vấn");
+                fetchData(); // reload lại bảng
+            } else {
+                notification.error({
+                    message: "Lỗi",
+                    description: res.message,
+                });
+            }
+        } catch (error) {
+            message.error("Có lỗi xảy ra khi từ chối");
+        }
+    };
+
     const columns: ColumnsType<IResume> = [
         {
             title: "STT",
@@ -77,6 +94,10 @@ const UserResume = () => {
                         return "Bị từ chối";
                     case "INTERVIEW_CONFIRMED":
                         return "Đã xác nhận phỏng vấn";
+                    case "INTERVIEW_REJECTED":
+                        return "Đã từ chối phỏng vấn";
+                    case "FAILED":
+                        return "Không đạt yêu cầu";
                     case "HIRED":
                         return "Đã tuyển";
                     default:
@@ -91,17 +112,43 @@ const UserResume = () => {
         },
         {
             title: "Hành động",
+            width: 200,
             render: (_, record) => {
                 if (record.status === "APPROVED") {
                     return (
-                        <Button type="link" onClick={() => handleConfirmInterview(Number(record.id))}>
-                            Xác nhận tham gia phỏng vấn
-                        </Button>
+                        <Space size="small">
+                            <Button 
+                                type="primary" 
+                                size="small"
+                                onClick={() => handleConfirmInterview(Number(record.id))}
+                                style={{ 
+                                    backgroundColor: '#52c41a',
+                                    borderColor: '#52c41a',
+                                    padding: '0 8px'
+                                }}
+                            >
+                                Xác nhận tham gia
+                            </Button>
+                            <Button 
+                                danger
+                                size="small"
+                                onClick={() => handleRejectInterview(Number(record.id))}
+                                style={{ padding: '0 8px' }}
+                            >
+                                Từ chối phỏng vấn
+                            </Button>
+                        </Space>
                     );
                 } else if (record.status === "REJECTED") {
-                    return <span>Đơn đã bị từ chối</span>;
+                    return <span style={{ color: '#ff4d4f' }}>Đơn đã bị từ chối</span>;
                 } else if (record.status === "INTERVIEW_CONFIRMED") {
-                    return <span>Đã xác nhận</span>;
+                    return <span style={{ color: '#52c41a' }}>Đã xác nhận tham gia</span>;
+                } else if (record.status === "INTERVIEW_REJECTED") {
+                    return <span style={{ color: '#ff4d4f' }}>Đã từ chối phỏng vấn</span>;
+                } else if (record.status === "FAILED") {
+                    return <span style={{ color: '#ff4d4f' }}>Không đạt yêu cầu</span>;
+                } else if (record.status === "HIRED") {
+                    return <span style={{ color: '#13c2c2' }}>Đã được tuyển dụng</span>;
                 }
                 return null;
             },

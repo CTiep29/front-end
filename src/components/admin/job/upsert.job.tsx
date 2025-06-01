@@ -83,7 +83,7 @@ const ViewUpsertJob = (props: any) => {
                         },
                         companyLabel: company.name,
                         location: company.location,
-                        active: true
+                        active: false
                     });
                     console.log(form.getFieldsValue());
 
@@ -191,12 +191,27 @@ const ViewUpsertJob = (props: any) => {
             description: value,
             startDate: dayjs(values.startDate, 'DD/MM/YYYY').toDate(),
             endDate: dayjs(values.endDate, 'DD/MM/YYYY').toDate(),
-            active: values.active
+            active: values.active,
+            status: 'PENDING'
         };
 
         const res = dataUpdate?.id
-            ? await callUpdateJob(job, dataUpdate.id)
-            : await callCreateJob(job);
+            ? await callUpdateJob({
+                ...job,
+                company: {
+                    id: companyId
+                },
+                status: 'PENDING',
+                active: false
+            }, dataUpdate.id)
+            : await callCreateJob({
+                ...job,
+                company: {
+                    id: companyId
+                },
+                status: 'PENDING',
+                active: false
+            });
 
         if (res?.data) {
             message.success(`${dataUpdate?.id ? 'Cập nhật' : 'Tạo mới'} công việc thành công`);
@@ -361,8 +376,8 @@ const ViewUpsertJob = (props: any) => {
                                     name="active"
                                     checkedChildren="ACTIVE"
                                     unCheckedChildren="INACTIVE"
-                                    initialValue={true}
-                                    fieldProps={{ defaultChecked: true }}
+                                    initialValue={false}
+                                    fieldProps={{ defaultChecked: false }}
                                 />
                             </Col>
                             <Col span={24}>

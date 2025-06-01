@@ -121,6 +121,7 @@ const SearchClient = () => {
                         <h1 className={styles.searchTitle}>
                             Tìm Kiếm Việc Làm Ngành Công Nghệ Thông Tin
                         </h1>
+                        <p className={styles.searchTitle2}>Tin tuyển dụng làm việc mỗi ngày từ hàng nghìn doanh nghiệp uy tín tại Việt Nam</p>
                     </Col>
 
                     <Col xs={24} md={16}>
@@ -158,24 +159,24 @@ const SearchClient = () => {
 
                     <Col xs={24} md={4}>
                         <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
-                            <Button 
-                                type="primary" 
-                                onClick={() => form.submit()} 
-                                block 
+                            <Button
+                                type="primary"
+                                onClick={() => form.submit()}
+                                block
                                 size="large"
                                 className={styles.searchButton}
                             >
                                 Tìm Việc
                             </Button>
                             {location.pathname === '/job' && (
-                                <Button 
-                                    type="link" 
+                                <Button
+                                    type="link"
                                     onClick={() => setIsExpanded(!isExpanded)}
                                     style={{ color: '#1677ff', padding: '0 8px' }}
                                 >
                                     {isExpanded ? (
                                         <>
-                                            Thu gọn <UpOutlined style={{ marginLeft: '1px'}} />
+                                            Thu gọn <UpOutlined style={{ marginLeft: '1px' }} />
                                         </>
                                     ) : (
                                         <>
@@ -194,7 +195,7 @@ const SearchClient = () => {
                                     <Input
                                         placeholder="Tìm kiếm theo tên công việc hoặc tên công ty..."
                                         size="large"
-                                        style={{ 
+                                        style={{
                                             borderRadius: '8px',
                                             boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
                                         }}

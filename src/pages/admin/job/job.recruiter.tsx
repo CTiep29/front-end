@@ -160,6 +160,25 @@ const JobRecruiterPage = () => {
             hideInSearch: true,
         },
         {
+            title: 'Trạng thái duyệt',
+            dataIndex: 'status',
+            render(dom, entity) {
+                const statusConfig = {
+                    PENDING: { color: 'orange', text: 'Chờ duyệt' },
+                    APPROVED: { color: 'green', text: 'Đã duyệt' },
+                    REJECTED: { color: 'red', text: 'Đã từ chối' }
+                };
+                
+                const status = statusConfig[entity.status];
+                return (
+                    <Tag color={status.color}>
+                        {status.text}
+                    </Tag>
+                );
+            },
+            hideInSearch: true,
+        },
+        {
             title: 'Ngày tạo',
             dataIndex: 'createdAt',
             width: 200,
@@ -189,38 +208,46 @@ const JobRecruiterPage = () => {
             width: 50,
             render: (_, entity) => (
                 <Space>
-                    {entity.active ? (
+                    {entity.status === 'PENDING' && (
+                        <EditOutlined
+                            style={{ fontSize: 20, color: '#ffa500' }}
+                            onClick={() => navigate(`upsert?id=${entity.id}`)}
+                        />
+                    )}
+                    {entity.status === 'APPROVED' && (
                         <>
                             <EditOutlined
                                 style={{ fontSize: 20, color: '#ffa500' }}
                                 onClick={() => navigate(`upsert?id=${entity.id}`)}
                             />
-                            <Popconfirm
-                                placement="leftTop"
-                                title="Xác nhận xóa công việc"
-                                description="Bạn có chắc chắn muốn xóa công việc này?"
-                                onConfirm={() => handleDeleteJob(entity.id)}
-                                okText="Xác nhận"
-                                cancelText="Hủy"
-                            >
-                                <DeleteOutlined
-                                    style={{ fontSize: 20, color: '#ff4d4f', cursor: 'pointer' }}
-                                />
-                            </Popconfirm>
+                            {entity.active ? (
+                                <Popconfirm
+                                    placement="leftTop"
+                                    title="Xác nhận xóa công việc"
+                                    description="Bạn có chắc chắn muốn xóa công việc này?"
+                                    onConfirm={() => handleDeleteJob(entity.id)}
+                                    okText="Xác nhận"
+                                    cancelText="Hủy"
+                                >
+                                    <DeleteOutlined
+                                        style={{ fontSize: 20, color: '#ff4d4f', cursor: 'pointer' }}
+                                    />
+                                </Popconfirm>
+                            ) : (
+                                <Popconfirm
+                                    placement="leftTop"
+                                    title="Xác nhận khôi phục công việc"
+                                    description="Bạn có chắc chắn muốn khôi phục công việc này?"
+                                    onConfirm={() => handleRestoreJob(entity.id)}
+                                    okText="Xác nhận"
+                                    cancelText="Hủy"
+                                >
+                                    <UndoOutlined
+                                        style={{ fontSize: 20, color: '#1890ff', cursor: 'pointer' }}
+                                    />
+                                </Popconfirm>
+                            )}
                         </>
-                    ) : (
-                        <Popconfirm
-                            placement="leftTop"
-                            title="Xác nhận khôi phục công việc"
-                            description="Bạn có chắc chắn muốn khôi phục công việc này?"
-                            onConfirm={() => handleRestoreJob(entity.id)}
-                            okText="Xác nhận"
-                            cancelText="Hủy"
-                        >
-                            <UndoOutlined
-                                style={{ fontSize: 20, color: '#1890ff', cursor: 'pointer' }}
-                            />
-                        </Popconfirm>
                     )}
                 </Space>
             )

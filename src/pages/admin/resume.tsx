@@ -86,7 +86,7 @@ const ResumePage = () => {
                 let color = 'default';
                 let text = entity.status;
                 let tooltip = '';
-                
+
                 switch (entity.status) {
                     case 'PENDING':
                         color = '#1890ff';
@@ -109,9 +109,19 @@ const ResumePage = () => {
                         tooltip = 'Hồ sơ đã bị từ chối';
                         break;
                     case 'INTERVIEW_CONFIRMED':
-                        color = '#C0C0C0';
+                        color = '#a93297';
                         text = 'Xác nhận phỏng vấn';
                         tooltip = 'Ứng viên đã xác nhận tham gia phỏng vấn';
+                        break;
+                    case 'INTERVIEW_REJECTED':
+                        color = '#ff4d4f';
+                        text = 'Từ chối phỏng vấn';
+                        tooltip = 'Ứng viên đã từ chối tham gia phỏng vấn';
+                        break;
+                    case 'FAILED':
+                        color = '#ff4d4f';
+                        text = 'Không đạt yêu cầu';
+                        tooltip = 'Ứng viên không đạt yêu cầu sau phỏng vấn';
                         break;
                     case 'HIRED':
                         color = '#13c2c2';
@@ -119,13 +129,13 @@ const ResumePage = () => {
                         tooltip = 'Ứng viên đã được tuyển dụng';
                         break;
                 }
-                
+
                 return (
                     <Tooltip title={tooltip}>
                         <div style={{ display: 'flex', justifyContent: 'center' }}>
-                            <Tag 
+                            <Tag
                                 color={color}
-                                style={{ 
+                                style={{
                                     padding: '6px 12px',
                                     borderRadius: '4px',
                                     fontSize: '14px',
@@ -152,6 +162,8 @@ const ResumePage = () => {
                         APPROVED: 'Đã duyệt',
                         REJECTED: 'Từ chối',
                         INTERVIEW_CONFIRMED: 'Xác nhận phỏng vấn',
+                        INTERVIEW_REJECTED: 'Từ chối phỏng vấn',
+                        FAILED: 'Không đạt yêu cầu',
                         HIRED: 'Đã tuyển'
                     }}
                     placeholder="Chọn trạng thái"
